@@ -8,6 +8,8 @@
 # Створення бібліотеки synapse
 add_library(synapse
     ${CMAKE_CURRENT_SOURCE_DIR}/SynapseBus.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/priority/PriorityMessageQueue.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/utils/WeightedConnectionManager.cpp
 )
 
 # Встановлення залежностей
@@ -18,4 +20,8 @@ target_link_libraries(synapse core)
 # Встановлення заголовочних файлів
 # Installing header files
 # Встановлення заголовочних файлів
-target_include_directories(synapse PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(synapse PUBLIC 
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/priority
+    ${CMAKE_CURRENT_SOURCE_DIR}/utils
+)

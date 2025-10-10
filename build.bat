@@ -36,3 +36,7 @@ echo.
 echo To run the advanced scheduler example, execute: _build\bin\advanced_scheduler_example.exe
 echo Щоб запустити приклад розширеного планувальника, виконайте: _build\bin\advanced_scheduler_example.exe
 echo Чтобы запустить пример расширенного планировщика, выполните: _build\bin\advanced_scheduler_example.exe
+echo.
+echo To run the advanced neuron example, execute: _build\bin\advanced_neuron_example.exe
+echo Щоб запустити приклад розширеного нейрона, виконайте: _build\bin\advanced_neuron_example.exe
+echo Чтобы запустить пример расширенного нейрона, выполните: _build\bin\advanced_neuron_example.exe

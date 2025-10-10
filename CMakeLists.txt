@@ -41,10 +41,15 @@ add_subdirectory(src/api)
 # Створення виконуваного файлу для прикладу
 add_executable(simple_example src/examples/simple_example.cpp)
 
-# Створення виконуваного файлу для розширеного прикладу
-# Creating executable for advanced example
-# Створення виконуваного файлу для розширеного прикладу
+# Створення виконуваного файлу для розширеного прикладу планувальника
+# Creating executable for advanced scheduler example
+# Створення виконуваного файлу для розширеного прикладу планувальника
 add_executable(advanced_scheduler_example src/examples/advanced_scheduler_example.cpp)
+
+# Створення виконуваного файлу для розширеного прикладу нейрона
+# Creating executable for advanced neuron example
+# Створення виконуваного файлу для розширеного прикладу нейрона
+add_executable(advanced_neuron_example src/examples/advanced_neuron_example.cpp)
 
 # Створення виконуваного файлу для тестів
 # Creating executable for tests
@@ -64,6 +69,15 @@ target_link_libraries(simple_example
 )
 
 target_link_libraries(advanced_scheduler_example 
+    core
+    neuron
+    synapse
+    memory
+    diagnostics
+    api
+)
+
+target_link_libraries(advanced_neuron_example 
     core
     neuron
     synapse
