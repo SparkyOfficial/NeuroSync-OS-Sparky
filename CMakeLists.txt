@@ -13,7 +13,7 @@ project(NeuroSync_OS_Sparky)
 # Стандарт C++
 # C++ standard
 # Стандарт C++
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Вихідна директорія для виконуваних файлів
