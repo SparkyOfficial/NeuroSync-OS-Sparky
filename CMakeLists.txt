@@ -35,6 +35,7 @@ add_subdirectory(src/synapse)
 add_subdirectory(src/memory)
 add_subdirectory(src/diagnostics)
 add_subdirectory(src/api)
+add_subdirectory(src/network)
 
 # Створення виконуваного файлу для прикладу
 # Creating executable for example
@@ -71,6 +72,11 @@ add_executable(advanced_diagnostics_example src/examples/advanced_diagnostics_ex
 # Створення виконуваного файлу для розширеного прикладу API
 add_executable(advanced_api_example src/examples/advanced_api_example.cpp)
 
+# Створення виконуваного файлу для прикладу нейронної мережі
+# Creating executable for neural network example
+# Створення виконуваного файлу для прикладу нейронної мережі
+add_executable(neural_network_example src/examples/neural_network_example.cpp)
+
 # Створення виконуваного файлу для тестів
 # Creating executable for tests
 # Створення виконуваного файлу для тестів
@@ -86,6 +92,7 @@ target_link_libraries(simple_example
     memory
     diagnostics
     api
+    network
 )
 
 target_link_libraries(advanced_scheduler_example 
@@ -95,6 +102,7 @@ target_link_libraries(advanced_scheduler_example
     memory
     diagnostics
     api
+    network
 )
 
 target_link_libraries(advanced_neuron_example 
@@ -104,6 +112,7 @@ target_link_libraries(advanced_neuron_example
     memory
     diagnostics
     api
+    network
 )
 
 target_link_libraries(advanced_synapse_example 
@@ -113,6 +122,7 @@ target_link_libraries(advanced_synapse_example
     memory
     diagnostics
     api
+    network
 )
 
 target_link_libraries(advanced_memory_example 
@@ -122,6 +132,7 @@ target_link_libraries(advanced_memory_example
     memory
     diagnostics
     api
+    network
 )
 
 target_link_libraries(advanced_diagnostics_example 
@@ -131,6 +142,7 @@ target_link_libraries(advanced_diagnostics_example
     memory
     diagnostics
     api
+    network
 )
 
 target_link_libraries(advanced_api_example 
@@ -140,6 +152,17 @@ target_link_libraries(advanced_api_example
     memory
     diagnostics
     api
+    network
+)
+
+target_link_libraries(neural_network_example 
+    core
+    neuron
+    synapse
+    memory
+    diagnostics
+    api
+    network
 )
 
 target_link_libraries(test_neurosync 
@@ -149,4 +172,5 @@ target_link_libraries(test_neurosync
     memory
     diagnostics
     api
+    network
 )
