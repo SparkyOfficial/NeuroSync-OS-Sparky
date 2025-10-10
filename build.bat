@@ -1,42 +1,26 @@
 @echo off
-:: build.bat
-:: Скрипт збірки для NeuroSync OS Sparky
-:: Build script for NeuroSync OS Sparky
-:: Скрипт збірки для NeuroSync OS Sparky
+REM Build script for NeuroSync OS Sparky on Windows
+REM Скрипт збірки для NeuroSync OS Sparky на Windows
 
-echo === NeuroSync OS Sparky Build Script ===
-echo === Скрипт збірки NeuroSync OS Sparky ===
-echo === Скрипт сборки NeuroSync OS Sparky ===
+echo === Building NeuroSync OS Sparky ===
 
-:: Створення директорії збірки
-:: Creating build directory
-:: Создание директории сборки
-if not exist "_build" mkdir _build
-cd _build
+REM Create build directory
+REM Створення директорії збірки
+if not exist "build" mkdir build
+cd build
 
-:: Генерація файлів збірки
-:: Generating build files
-:: Генерация файлов сборки
+REM Configure with CMake
+REM Конфігурація за допомогою CMake
 cmake ..
 
-:: Компіляція проекту
-:: Compiling the project
-:: Компиляция проекта
-cmake --build .
+REM Build the project
+REM Збірка проекту
+cmake --build . --config Release
 
-echo.
-echo Build completed!
-echo Збірка завершена!
-echo Сборка завершена!
-echo.
-echo To run the simple example, execute: _build\bin\simple_example.exe
-echo Щоб запустити простий приклад, виконайте: _build\bin\simple_example.exe
-echo Чтобы запустить простой пример, выполните: _build\bin\simple_example.exe
-echo.
-echo To run the advanced scheduler example, execute: _build\bin\advanced_scheduler_example.exe
-echo Щоб запустити приклад розширеного планувальника, виконайте: _build\bin\advanced_scheduler_example.exe
-echo Чтобы запустить пример расширенного планировщика, выполните: _build\bin\advanced_scheduler_example.exe
-echo.
-echo To run the advanced neuron example, execute: _build\bin\advanced_neuron_example.exe
-echo Щоб запустити приклад розширеного нейрона, виконайте: _build\bin\advanced_neuron_example.exe
-echo Чтобы запустить пример расширенного нейрона, выполните: _build\bin\advanced_neuron_example.exe
+echo === Build completed successfully! ===
+
+echo === Running tests ===
+bin\Release\test_neurosync.exe
+bin\Release\advanced_memory_example.exe
+
+echo === All tests completed ===

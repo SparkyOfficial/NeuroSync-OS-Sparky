@@ -51,6 +51,16 @@ add_executable(advanced_scheduler_example src/examples/advanced_scheduler_exampl
 # Створення виконуваного файлу для розширеного прикладу нейрона
 add_executable(advanced_neuron_example src/examples/advanced_neuron_example.cpp)
 
+# Створення виконуваного файлу для розширеного прикладу синапса
+# Creating executable for advanced synapse example
+# Створення виконуваного файлу для розширеного прикладу синапса
+add_executable(advanced_synapse_example src/examples/advanced_synapse_example.cpp)
+
+# Створення виконуваного файлу для розширеного прикладу пам'яті
+# Creating executable for advanced memory example
+# Створення виконуваного файлу для розширеного прикладу пам'яті
+add_executable(advanced_memory_example src/examples/advanced_memory_example.cpp)
+
 # Створення виконуваного файлу для тестів
 # Creating executable for tests
 # Створення виконуваного файлу для тестів
@@ -78,6 +88,24 @@ target_link_libraries(advanced_scheduler_example
 )
 
 target_link_libraries(advanced_neuron_example 
+    core
+    neuron
+    synapse
+    memory
+    diagnostics
+    api
+)
+
+target_link_libraries(advanced_synapse_example 
+    core
+    neuron
+    synapse
+    memory
+    diagnostics
+    api
+)
+
+target_link_libraries(advanced_memory_example 
     core
     neuron
     synapse

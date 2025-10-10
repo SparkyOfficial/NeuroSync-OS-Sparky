@@ -8,6 +8,8 @@
 # Створення бібліотеки memory
 add_library(memory
     ${CMAKE_CURRENT_SOURCE_DIR}/MemoryCore.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/MemoryPool.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/GarbageCollector.cpp
 )
 
 # Встановлення заголовочних файлів
