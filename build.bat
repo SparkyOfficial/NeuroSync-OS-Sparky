@@ -29,6 +29,10 @@ echo Build completed!
 echo Збірка завершена!
 echo Сборка завершена!
 echo.
-echo To run the example, execute: _build\bin\simple_example.exe
-echo Щоб запустити приклад, виконайте: _build\bin\simple_example.exe
-echo Чтобы запустить пример, выполните: _build\bin\simple_example.exe
+echo To run the simple example, execute: _build\bin\simple_example.exe
+echo Щоб запустити простий приклад, виконайте: _build\bin\simple_example.exe
+echo Чтобы запустить простой пример, выполните: _build\bin\simple_example.exe
+echo.
+echo To run the advanced scheduler example, execute: _build\bin\advanced_scheduler_example.exe
+echo Щоб запустити приклад розширеного планувальника, виконайте: _build\bin\advanced_scheduler_example.exe
+echo Чтобы запустить пример расширенного планировщика, выполните: _build\bin\advanced_scheduler_example.exe

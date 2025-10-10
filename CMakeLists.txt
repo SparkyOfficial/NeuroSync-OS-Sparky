@@ -41,6 +41,11 @@ add_subdirectory(src/api)
 # Створення виконуваного файлу для прикладу
 add_executable(simple_example src/examples/simple_example.cpp)
 
+# Створення виконуваного файлу для розширеного прикладу
+# Creating executable for advanced example
+# Створення виконуваного файлу для розширеного прикладу
+add_executable(advanced_scheduler_example src/examples/advanced_scheduler_example.cpp)
+
 # Створення виконуваного файлу для тестів
 # Creating executable for tests
 # Створення виконуваного файлу для тестів
@@ -50,6 +55,15 @@ add_executable(test_neurosync src/tests/test_neurosync.cpp)
 # Linking libraries
 # Лінкування бібліотек
 target_link_libraries(simple_example 
+    core
+    neuron
+    synapse
+    memory
+    diagnostics
+    api
+)
+
+target_link_libraries(advanced_scheduler_example 
     core
     neuron
     synapse
