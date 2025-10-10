@@ -8,6 +8,7 @@
 # Створення бібліотеки api
 add_library(api
     ${CMAKE_CURRENT_SOURCE_DIR}/NeuroAPI.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/NeuroAPIAdvanced.cpp
 )
 
 # Встановлення залежностей

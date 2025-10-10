@@ -66,6 +66,11 @@ add_executable(advanced_memory_example src/examples/advanced_memory_example.cpp)
 # Створення виконуваного файлу для розширеного прикладу діагностики
 add_executable(advanced_diagnostics_example src/examples/advanced_diagnostics_example.cpp)
 
+# Створення виконуваного файлу для розширеного прикладу API
+# Creating executable for advanced API example
+# Створення виконуваного файлу для розширеного прикладу API
+add_executable(advanced_api_example src/examples/advanced_api_example.cpp)
+
 # Створення виконуваного файлу для тестів
 # Creating executable for tests
 # Створення виконуваного файлу для тестів
@@ -120,6 +125,15 @@ target_link_libraries(advanced_memory_example
 )
 
 target_link_libraries(advanced_diagnostics_example 
+    core
+    neuron
+    synapse
+    memory
+    diagnostics
+    api
+)
+
+target_link_libraries(advanced_api_example 
     core
     neuron
     synapse
