@@ -1,0 +1,68 @@
+# CMakeLists.txt
+# Система збірки для NeuroSync OS Sparky
+# Build system for NeuroSync OS Sparky
+# Система збірки для NeuroSync OS Sparky
+
+cmake_minimum_required(VERSION 3.10)
+
+# Назва проекту
+# Project name
+# Назва проекту
+project(NeuroSync_OS_Sparky)
+
+# Стандарт C++
+# C++ standard
+# Стандарт C++
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Вихідна директорія для виконуваних файлів
+# Output directory for executables
+# Вихідна директорія для виконуваних файлів
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+# Директорії з заголовочними файлами
+# Header file directories
+# Директорії з заголовочними файлами
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+# Додавання підкаталогів
+# Adding subdirectories
+# Додавання підкаталогів
+add_subdirectory(src/core)
+add_subdirectory(src/neuron)
+add_subdirectory(src/synapse)
+add_subdirectory(src/memory)
+add_subdirectory(src/diagnostics)
+add_subdirectory(src/api)
+
+# Створення виконуваного файлу для прикладу
+# Creating executable for example
+# Створення виконуваного файлу для прикладу
+add_executable(simple_example src/examples/simple_example.cpp)
+
+# Створення виконуваного файлу для тестів
+# Creating executable for tests
+# Створення виконуваного файлу для тестів
+add_executable(test_neurosync src/tests/test_neurosync.cpp)
+
+# Лінкування бібліотек
+# Linking libraries
+# Лінкування бібліотек
+target_link_libraries(simple_example 
+    core
+    neuron
+    synapse
+    memory
+    diagnostics
+    api
+)
+
+target_link_libraries(test_neurosync 
+    core
+    neuron
+    synapse
+    memory
+    diagnostics
+    api
+)
