@@ -8,6 +8,9 @@
 # Створення бібліотеки diagnostics
 add_library(diagnostics
     ${CMAKE_CURRENT_SOURCE_DIR}/Diagnostics.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Profiler.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Visualizer.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/PerformanceMonitor.cpp
 )
 
 # Встановлення залежностей
