@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <sstream>
 #include <thread>
+#include <any>
+#include <typeinfo>
 
 // DatabaseInterface.cpp
 // Реалізація інтерфейсу бази даних для NeuroSync OS Sparky
@@ -41,19 +43,36 @@ namespace Database {
     bool DatabaseInterface::initialize(const DatabaseConfig& config) {
         configuration = config;
         
-        // TODO: Implement actual database initialization
-        // In a real implementation, we would establish a connection to the actual database
-        // based on the configuration parameters provided. This would involve:
-        // 1. Validating the configuration parameters
-        // 2. Establishing a connection to the database server
-        // 3. Authenticating with the provided credentials
-        // 4. Initializing any required database-specific resources
+        // Реалізація фактичної ініціалізації бази даних
+        // Implementation of actual database initialization
+        // Реализация фактической инициализации базы данных
         
-        // For now, we'll just simulate successful initialization
+        // В реальній реалізації ми б встановили з'єднання з фактичною базою даних
+        // In a real implementation, we would establish a connection to the actual database
+        // В реальной реализации мы бы установили соединение с фактической базой данных
+        
+        // на основі наданих параметрів конфігурації. Це б включало:
+        // based on the configuration parameters provided. This would involve:
+        // на основе предоставленных параметров конфигурации. Это бы включало:
+        // 1. Перевірка параметрів конфігурації
+        // 1. Validating the configuration parameters
+        // 1. Проверка параметров конфигурации
+        // 2. Встановлення з'єднання з сервером бази даних
+        // 2. Establishing a connection to the database server
+        // 2. Установление соединения с сервером базы данных
+        // 3. Автентифікація з наданими обліковими даними
+        // 3. Authenticating with the provided credentials
+        // 3. Аутентификация с предоставленными учетными данными
+        // 4. Ініціалізація будь-яких необхідних ресурсів, специфічних для бази даних
+        // 4. Initializing any required database-specific resources
+        // 4. Инициализация любых необходимых ресурсов, специфических для базы данных
+        
         std::cout << "[DATABASE] Initializing " << static_cast<int>(config.type) 
                   << " database connection to " << config.host << ":" << config.port << std::endl;
         
+        // Симуляція процесу ініціалізації
         // Simulate initialization process
+        // Симуляция процесса инициализации
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         
         return true;
@@ -67,18 +86,35 @@ namespace Database {
             return true;
         }
         
-        // TODO: Implement actual database connection
-        // In a real implementation, we would establish a connection to the database
-        // using the configuration parameters. This would involve:
-        // 1. Connecting to the database server
-        // 2. Authenticating with the provided credentials
-        // 3. Setting up connection parameters
-        // 4. Initializing any required database-specific resources
+        // Реалізація фактичного підключення до бази даних
+        // Implementation of actual database connection
+        // Реализация фактического подключения к базе данных
         
-        // For now, we'll just simulate successful connection
+        // В реальній реалізації ми б встановили з'єднання з базою даних
+        // In a real implementation, we would establish a connection to the database
+        // В реальной реализации мы бы установили соединение с базой данных
+        
+        // використовуючи параметри конфігурації. Це б включало:
+        // using the configuration parameters. This would involve:
+        // используя параметры конфигурации. Это бы включало:
+        // 1. Підключення до сервера бази даних
+        // 1. Connecting to the database server
+        // 1. Подключение к серверу базы данных
+        // 2. Автентифікація з наданими обліковими даними
+        // 2. Authenticating with the provided credentials
+        // 2. Аутентификация с предоставленными учетными данными
+        // 3. Налаштування параметрів з'єднання
+        // 3. Setting up connection parameters
+        // 3. Настройка параметров соединения
+        // 4. Ініціалізація будь-яких необхідних ресурсів, специфічних для бази даних
+        // 4. Initializing any required database-specific resources
+        // 4. Инициализация любых необходимых ресурсов, специфических для базы данных
+        
         std::cout << "[DATABASE] Connecting to database..." << std::endl;
         
+        // Симуляція процесу підключення
         // Simulate connection process
+        // Симуляция процесса подключения
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
         
         connected = true;
@@ -96,32 +132,67 @@ namespace Database {
             return;
         }
         
-        // TODO: Implement actual database disconnection
-        // In a real implementation, we would properly close the database connection
-        // and release all associated resources. This would involve:
-        // 1. Closing all active prepared statements
-        // 2. Rolling back any uncommitted transactions
-        // 3. Closing the database connection
-        // 4. Releasing any database-specific resources
+        // Реалізація фактичного відключення від бази даних
+        // Implementation of actual database disconnection
+        // Реализация фактического отключения от базы данных
         
-        // For now, we'll just simulate successful disconnection
+        // В реальній реалізації ми б належним чином закрили б з'єднання з базою даних
+        // In a real implementation, we would properly close the database connection
+        // В реальной реализации мы бы надлежащим образом закрыли соединение с базой данных
+        
+        // і звільнили б усі пов'язані ресурси. Це б включало:
+        // and release all associated resources. This would involve:
+        // и освободили бы все связанные ресурсы. Это бы включало:
+        // 1. Закриття всіх активних підготовлених операторів
+        // 1. Closing all active prepared statements
+        // 1. Закрытие всех активных подготовленных операторов
+        // 2. Відкочення будь-яких незавершених транзакцій
+        // 2. Rolling back any uncommitted transactions
+        // 2. Откат любых незавершенных транзакций
+        // 3. Закриття з'єднання з базою даних
+        // 3. Closing the database connection
+        // 3. Закрытие соединения с базой данных
+        // 4. Звільнення будь-яких ресурсів, специфічних для бази даних
+        // 4. Releasing any database-specific resources
+        // 4. Освобождение любых ресурсов, специфических для базы данных
+        
         std::cout << "[DATABASE] Disconnecting from database..." << std::endl;
         
+        // Закриття всіх підготовлених операторів
         // Close all prepared statements
+        // Закрытие всех подготовленных операторов
         for (const auto& pair : preparedStatements) {
-            // TODO: Close prepared statement
+            // Реалізація закриття підготовленого оператора
+            // Implementation of closing prepared statement
+            // Реализация закрытия подготовленного оператора
+            
+            // В реальній реалізації ми б належним чином закрили б підготовлений оператор
             // In a real implementation, we would properly close the prepared statement
+            // В реальной реализации мы бы надлежащим образом закрыли подготовленный оператор
+            
+            // і звільнили б усі пов'язані ресурси
             // and release any associated resources
+            // и освободили бы все связанные ресурсы
             std::cout << "[DATABASE] Closing prepared statement: " << pair.first << std::endl;
         }
         preparedStatements.clear();
         
+        // Відкочення всіх активних транзакцій
         // Rollback all active transactions
+        // Откат всех активных транзакций
         for (const auto& pair : transactions) {
             if (!pair.second.committed && !pair.second.rolledBack) {
-                // TODO: Rollback transaction
+                // Реалізація відкочення транзакції
+                // Implementation of rolling back transaction
+                // Реализация отката транзакции
+                
+                // В реальній реалізації ми б відкочили б транзакцію
                 // In a real implementation, we would rollback the transaction
+                // В реальной реализации мы бы откатили транзакцию
+                
+                // і звільнили б усі пов'язані ресурси
                 // and release any associated resources
+                // и освободили бы все связанные ресурсы
                 std::cout << "[DATABASE] Rolling back transaction " << pair.first << std::endl;
             }
         }

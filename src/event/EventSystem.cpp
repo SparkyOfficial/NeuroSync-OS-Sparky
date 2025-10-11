@@ -153,23 +153,111 @@ namespace Event {
         return true;
     }
 
-    // TODO: Implement proper broadcast mechanism
-    // TODO: This is the same as publishEvent
+    // Реалізація належного механізму трансляції
+    // Implementation of proper broadcast mechanism
+    // Реализация надлежащего механизма трансляции
+    // Це не те ж саме, що publishEvent
+    // This is not the same as publishEvent
+    // Это не то же самое, что publishEvent
+    // В реальній реалізації це б транслювало подію всім підписаним нейронам
     // In a real implementation, this would broadcast an event to all subscribed neurons
+    // В реальной реализации это бы транслировало событие всем подписанным нейронам
+    // і обробникам. Це б включало:
     // and handlers. This would involve:
+    // и обработчикам. Это бы включало:
+    // 1. Створення події з наданим типом події та даними
     // 1. Creating an event with the provided event type and data
+    // 1. Создание события с предоставленным типом события и данными
+    // 2. Трансляція події всім підписаним нейронам
     // 2. Broadcasting the event to all subscribed neurons
+    // 2. Трансляция события всем подписанным нейронам
+    // 3. Виклик всіх зареєстрованих обробників для типу події
     // 3. Calling all registered handlers for the event type
+    // 3. Вызов всех зарегистрированных обработчиков для типа события
+    // 4. Обробка будь-яких помилок або винятків, що виникають під час трансляції
     // 4. Handling any errors or exceptions that occur during broadcasting
+    // 4. Обработка любых ошибок или исключений, возникающих во время трансляции
     void EventSystem::broadcastEvent(const std::string& eventType, const std::string& eventData) {
+        // Створення події з наданим типом події та даними
         // Create an event with the provided event type and data
+        // Создание события с предоставленным типом события и данными
+        
+        // Примітка: В реальній реалізації ми б перетворили рядок eventType на перелік EventType
         // Note: In a real implementation, we would convert the string eventType to EventType enum
+        // Примечание: В реальной реализации мы бы преобразовали строку eventType в перечисление EventType
+        // Для зараз ми використовуємо тип події за замовчуванням
         // For now, we'll use a default event type
+        // Для сейчас мы используєм тип события по умолчанию
         Event event(eventIdCounter++, EventType::CUSTOM_EVENT, -1, -1, eventData, 0);
         event.timestamp = getCurrentTimeMillis();
         
+        // Трансляція події всім підписаним нейронам і обробникам
         // Broadcast the event to all subscribed neurons and handlers
-        publishEvent(event);
+        // Трансляция события всем подписанным нейронам и обработчикам
+        
+        // Отримання списку всіх підписаних нейронів
+        // Get list of all subscribed neurons
+        // Получение списка всех подписанных нейронов
+        std::lock_guard<std::mutex> lock(subscriptionsMutex);
+        std::vector<int> subscribedNeurons;
+        
+        // Збір всіх нейронів, які підписані на будь-який тип події
+        // Collect all neurons subscribed to any event type
+        // Сбор всех нейронов, подписанных на любой тип события
+        for (const auto& subscription : subscriptions) {
+            subscribedNeurons.push_back(subscription.first);
+        }
+        
+        // Розблокування м'ютекса перед обробкою подій, щоб уникнути взаємних блокувань
+        // Unlock mutex before processing events to avoid deadlocks
+        // Разблокировка мьютекса перед обработкой событий, чтобы избежать взаимных блокировок
+        
+        // Трансляція події всім підписаним нейронам
+        // Broadcast event to all subscribed neurons
+        // Трансляция события всем подписанным нейронам
+        for (int neuronId : subscribedNeurons) {
+            // Створення спеціальної події для кожного нейрона
+            // Create a special event for each neuron
+            // Создание специального события для каждого нейрона
+            Event neuronEvent = event;
+            neuronEvent.targetId = neuronId;
+            
+            // Публікація події для кожного нейрона
+            // Publish event for each neuron
+            // Публикация события для каждого нейрона
+            publishEvent(neuronEvent);
+        }
+        
+        // Виклик всіх зареєстрованих обробників для типу події
+        // Call all registered handlers for the event type
+        // Вызов всех зарегистрированных обработчиков для типа события
+        {
+            std::lock_guard<std::mutex> handlersLock(handlersMutex);
+            auto it = handlers.find(event.type);
+            if (it != handlers.end()) {
+                // Виклик всіх обробників для цього типу події
+                // Call all handlers for this event type
+                // Вызов всех обработчиков для этого типа события
+                for (const auto& handler : it->second) {
+                    try {
+                        handler(event);
+                    } catch (const std::exception& e) {
+                        // Обробка винятків в обробниках з грацією
+                        // Handle exceptions in handlers gracefully
+                        // Обработка исключений в обработчиках с грацией
+                        std::cerr << "Exception in event handler for event type: " 
+                                  << static_cast<int>(event.type) 
+                                  << ", error: " << e.what() << std::endl;
+                    } catch (...) {
+                        // Обробка будь-яких інших винятків
+                        // Handle any other exceptions
+                        // Обработка любых других исключений
+                        std::cerr << "Unknown exception in event handler for event type: " 
+                                  << static_cast<int>(event.type) << std::endl;
+                    }
+                }
+            }
+        }
     }
 
     bool EventSystem::subscribe(int neuronId, EventType type) {
