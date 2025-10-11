@@ -234,11 +234,102 @@ namespace Memory {
     // Merge adjacent free blocks
     // Об'єднати суміжні вільні блоки
     void MemoryPool::mergeFreeBlocks() {
-        // Ця реалізація спрощена і не обробляє об'єднання суміжних блоків
-        // This implementation is simplified and doesn't handle merging adjacent blocks
-        // Ця реалізація спрощена і не обробляє об'єднання суміжних блоків
-        // Для повної реалізації потрібно відстежувати фізичне розташування блоків у пам'яті
-        // For a complete implementation, we need to track the physical location of blocks in memory
+        // Сортуємо вільні блоки за адресою для полегшення об'єднання
+        // Sort free blocks by address to facilitate merging
+        // Сортируем свободные блоки по адресу для облегчения объединения
+        
+        // Створюємо вектор вільних блоків
+        // Create a vector of free blocks
+        // Создаем вектор свободных блоков
+        std::vector<MemoryBlock*> freeBlocksVector;
+        MemoryBlock* current = freeBlocks;
+        
+        while (current) {
+            freeBlocksVector.push_back(current);
+            current = current->next;
+        }
+        
+        // Сортуємо блоки за адресою
+        // Sort blocks by address
+        // Сортируем блоки по адресу
+        std::sort(freeBlocksVector.begin(), freeBlocksVector.end(), 
+                 [](MemoryBlock* a, MemoryBlock* b) {
+                     return a->address < b->address;
+                 });
+        
+        // Об'єднуємо суміжні блоки
+        // Merge adjacent blocks
+        // Объединяем смежные блоки
+        for (size_t i = 0; i < freeBlocksVector.size(); ) {
+            MemoryBlock* currentBlock = freeBlocksVector[i];
+            size_t mergedCount = 1;
+            
+            // Перевіряємо наступні блоки на суміжність
+            // Check next blocks for adjacency
+            // Проверяем следующие блоки на смежность
+            for (size_t j = i + 1; j < freeBlocksVector.size(); ++j) {
+                MemoryBlock* nextBlock = freeBlocksVector[j];
+                
+                // Перевіряємо, чи блоки суміжні
+                // Check if blocks are adjacent
+                // Проверяем, являются ли блоки смежными
+                char* currentEnd = static_cast<char*>(currentBlock->address) + currentBlock->size;
+                char* nextStart = static_cast<char*>(nextBlock->address);
+                
+                if (currentEnd == nextStart) {
+                    // Блоки суміжні, об'єднуємо їх
+                    // Blocks are adjacent, merge them
+                    // Блоки смежные, объединяем их
+                    currentBlock->size += nextBlock->size;
+                    mergedCount++;
+                    
+                    // Видаляємо об'єднаний блок зі списку
+                    // Remove merged block from list
+                    // Удаляем объединенный блок из списка
+                    if (nextBlock->prev) {
+                        nextBlock->prev->next = nextBlock->next;
+                    } else {
+                        freeBlocks = nextBlock->next;
+                    }
+                    
+                    if (nextBlock->next) {
+                        nextBlock->next->prev = nextBlock->prev;
+                    }
+                    
+                    // Видаляємо блок
+                    // Delete block
+                    // Удаляем блок
+                    delete nextBlock;
+                    blockCount--;
+                } else {
+                    // Блоки не суміжні, зупиняємося
+                    // Blocks are not adjacent, stop
+                    // Блоки не смежные, останавливаемся
+                    break;
+                }
+            }
+            
+            i += mergedCount;
+        }
+        
+        // Перебудовуємо список вільних блоків
+        // Rebuild the free blocks list
+        // Перестраиваем список свободных блоков
+        freeBlocks = nullptr;
+        MemoryBlock* prevBlock = nullptr;
+        
+        for (MemoryBlock* block : freeBlocksVector) {
+            block->prev = prevBlock;
+            block->next = nullptr;
+            
+            if (prevBlock) {
+                prevBlock->next = block;
+            } else {
+                freeBlocks = block;
+            }
+            
+            prevBlock = block;
+        }
     }
 
     // Перевірити, чи належить вказівник цьому пулу

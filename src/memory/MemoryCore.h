@@ -34,6 +34,11 @@ namespace Memory {
         MemoryCore();
         ~MemoryCore();
         
+        // Ініціалізація ядра управління пам'яттю
+        // Initialize memory management core
+        // Инициализация ядра управления памятью
+        bool initialize();
+        
         // Виділити блок пам'яті
         // Allocate a block of memory
         // Виділити блок пам'яті
@@ -63,6 +68,11 @@ namespace Memory {
         // Perform garbage collection
         // Виконати збір сміття
         void collectGarbage();
+        
+        // Отримати список всіх зареєстрованих блоків пам'яті
+        // Get list of all registered memory blocks
+        // Отримати список всіх зареєстрованих блоків пам'яті
+        std::vector<std::pair<void*, size_t>> getAllMemoryBlocks() const;
         
         // Отримати статистику використання пам'яті
         // Get memory usage statistics

@@ -1,5 +1,7 @@
 #include "../NeuroSync.h"
 #include <iostream>
+#include <thread>
+#include <chrono>
 
 // simple_example.cpp
 // Простий приклад використання NeuroSync OS Sparky
@@ -64,9 +66,36 @@ int main() {
     // Simulating work for some time
     // Імітація роботи протягом деякого часу
     for (int i = 0; i < 5; i++) {
-        // TODO: Реалізувати реальну обробку
-        // TODO: Implement real processing
-        // TODO: Реалізувати реальну обробку
+        // Реалізація реальної обробки
+        // Implement real processing
+        // Реалізація реальної обробки
+        
+        // Отримання статистики системи
+        // Get system statistics
+        // Получение статистики системы
+        NeuroSyncSystemStatistics stats = neurosync_get_system_statistics();
+        
+        std::cout << "Iteration " << i + 1 << ":" << std::endl;
+        std::cout << "  Messages sent: " << stats.totalMessagesSent << std::endl;
+        std::cout << "  Messages received: " << stats.totalMessagesReceived << std::endl;
+        std::cout << "  Active connections: " << stats.activeConnections << std::endl;
+        
+        // Надсилання додаткових повідомлень
+        // Send additional messages
+        // Отправка дополнительных сообщений
+        const char* additional_message = "Additional message from neuron 1!";
+        neurosync_send_message(neuron1, neuron2, (void*)additional_message, strlen(additional_message) + 1, 1, 50);
+        
+        // Отримання кількості активних нейронів
+        // Get the number of active neurons
+        // Получение количества активных нейронов
+        int active_neurons = neurosync_get_active_neuron_count();
+        std::cout << "  Active neurons: " << active_neurons << std::endl;
+        
+        // Затримка для спостереження
+        // Delay for observation
+        // Задержка для наблюдения
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
     
     // Зупинка системи

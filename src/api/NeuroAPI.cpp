@@ -13,10 +13,10 @@
 // Глобальні екземпляри компонентів
 // Global component instances
 // Глобальні екземпляри компонентів
-static NeuronManager* neuronManager = nullptr;
-static SynapseBus* synapseBus = nullptr;
-static Scheduler* scheduler = nullptr;
-static NeuroSync::Diagnostics::Diagnostics* diagnostics = nullptr;
+NeuronManager* neuronManager = nullptr;
+SynapseBus* synapseBus = nullptr;
+Core::Scheduler* scheduler = nullptr;
+NeuroSync::Diagnostics::Diagnostics* diagnostics = nullptr;
 
 void neurosync_init() {
     // Ініціалізація всіх компонентів системи
@@ -32,7 +32,7 @@ void neurosync_init() {
     }
     
     if (scheduler == nullptr) {
-        scheduler = new Scheduler();
+        scheduler = new Core::Scheduler();
     }
     
     if (diagnostics == nullptr) {
@@ -164,133 +164,5 @@ void neurosync_stop() {
 // Розширені функції API
 // Advanced API functions
 // Расширенные функции API
+// These functions are implemented in NeuroAPIAdvanced.cpp
 
-// Створення нейрона з типом та ім'ям
-// Create a neuron with type and name
-// Создать нейрон с типом и именем
-int neurosync_create_neuron_advanced(NeuroSyncNeuronType type, const char* name) {
-    return ::neurosync_create_neuron_advanced(type, name);
-}
-
-// Активувати нейрон
-// Activate a neuron
-// Активировать нейрон
-bool neurosync_activate_neuron(int neuron_id) {
-    return ::neurosync_activate_neuron(neuron_id);
-}
-
-// Деактивувати нейрон
-// Deactivate a neuron
-// Деактивировать нейрон
-bool neurosync_deactivate_neuron(int neuron_id) {
-    return ::neurosync_deactivate_neuron(neuron_id);
-}
-
-// Отримати кількість активних нейронів
-// Get the number of active neurons
-// Получить количество активных нейронов
-int neurosync_get_active_neuron_count() {
-    return ::neurosync_get_active_neuron_count();
-}
-
-// Отримати загальну кількість нейронів
-// Get the total number of neurons
-// Получить общее количество нейронов
-int neurosync_get_total_neuron_count() {
-    return ::neurosync_get_total_neuron_count();
-}
-
-// Надсилання повідомлення з розширеними параметрами
-// Send message with advanced parameters
-// Отправить сообщение с расширенными параметрами
-bool neurosync_send_message_advanced(int sender_id, int receiver_id, 
-                                   const void* data, size_t data_size,
-                                   NeuroSyncMessagePriority priority, double weight) {
-    return ::neurosync_send_message_advanced(sender_id, receiver_id, data, data_size, priority, weight);
-}
-
-// Отримати повідомлення
-// Receive a message
-// Получить сообщение
-bool neurosync_receive_message(int* sender_id, int* receiver_id, 
-                              void** data, size_t* data_size,
-                              NeuroSyncMessagePriority* priority, double* weight) {
-    return ::neurosync_receive_message(sender_id, receiver_id, data, data_size, priority, weight);
-}
-
-// Оновити вагу зв'язку
-// Update connection weight
-// Обновить вес связи
-bool neurosync_update_connection_weight(int neuron_a, int neuron_b, double weight) {
-    return ::neurosync_update_connection_weight(neuron_a, neuron_b, weight);
-}
-
-// Отримати вагу зв'язку
-// Get connection weight
-// Получить вес связи
-double neurosync_get_connection_weight(int neuron_a, int neuron_b) {
-    return ::neurosync_get_connection_weight(neuron_a, neuron_b);
-}
-
-// Активувати зв'язок
-// Activate connection
-// Активировать связь
-bool neurosync_activate_connection(int neuron_a, int neuron_b) {
-    return ::neurosync_activate_connection(neuron_a, neuron_b);
-}
-
-// Деактивувати зв'язок
-// Deactivate connection
-// Деактивировать связь
-bool neurosync_deactivate_connection(int neuron_a, int neuron_b) {
-    return ::neurosync_deactivate_connection(neuron_a, neuron_b);
-}
-
-// Отримати кількість з'єднань
-// Get connection count
-// Получить количество соединений
-size_t neurosync_get_connection_count() {
-    return ::neurosync_get_connection_count();
-}
-
-// Отримати кількість повідомлень у черзі
-// Get message queue size
-// Получить количество сообщений в очереди
-size_t neurosync_get_message_queue_size() {
-    return ::neurosync_get_message_queue_size();
-}
-
-// Отримати статистику системи
-// Get system statistics
-// Получить статистику системы
-NeuroSyncSystemStatistics neurosync_get_system_statistics() {
-    return ::neurosync_get_system_statistics();
-}
-
-// Встановити поріг активності для нейрона
-// Set activity threshold for neuron
-// Установить порог активности для нейрона
-bool neurosync_set_neuron_threshold(int neuron_id, double threshold) {
-    return ::neurosync_set_neuron_threshold(neuron_id, threshold);
-}
-
-// Отримати поріг активності нейрона
-// Get neuron activity threshold
-// Получить порог активности нейрона
-double neurosync_get_neuron_threshold(int neuron_id) {
-    return ::neurosync_get_neuron_threshold(neuron_id);
-}
-
-// Встановити функцію зворотного виклику для нейрона
-// Set callback function for neuron
-// Установить функцию обратного вызова для нейрона
-bool neurosync_set_neuron_callback(int neuron_id, void (*callback_function)()) {
-    return ::neurosync_set_neuron_callback(neuron_id, callback_function);
-}
-
-// Отримати ідентифікатор нейрона за ім'ям
-// Get neuron ID by name
-// Получить идентификатор нейрона по имени
-int neurosync_get_neuron_id_by_name(const char* name) {
-    return ::neurosync_get_neuron_id_by_name(name);
-}

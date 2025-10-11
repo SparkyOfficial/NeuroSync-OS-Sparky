@@ -125,6 +125,20 @@ namespace Memory {
         markAndSweep();
     }
 
+    // Отримати список всіх зареєстрованих об'єктів
+    // Get list of all registered objects
+    // Отримати список всіх зареєстрованих об'єктів
+    std::vector<std::pair<void*, size_t>> GarbageCollector::getAllObjects() const {
+        std::lock_guard<std::mutex> lock(gcMutex);
+        std::vector<std::pair<void*, size_t>> result;
+        
+        for (const auto& pair : objects) {
+            result.emplace_back(pair.first, pair.second->size);
+        }
+        
+        return result;
+    }
+
     // Виконати алгоритм позначення-збору
     // Perform mark-and-sweep algorithm
     // Виконати алгоритм позначення-збору

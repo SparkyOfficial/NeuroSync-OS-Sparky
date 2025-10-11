@@ -7,6 +7,7 @@
 # Добавление библиотеки network
 add_library(network
     NetworkCommunication.cpp
+    NetworkManager.cpp
 )
 
 # Встановлення властивостей C++14
@@ -49,6 +50,6 @@ install(TARGETS network
 # Встановлення заголовочних файлів
 # Install header files
 # Установка заголовочных файлов
-install(FILES NetworkCommunication.h
+install(FILES NetworkCommunication.h NetworkManager.h
     DESTINATION include/network
 )

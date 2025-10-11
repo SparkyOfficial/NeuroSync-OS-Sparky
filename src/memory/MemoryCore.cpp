@@ -13,6 +13,16 @@ namespace Memory {
         garbageCollector = std::make_unique<GarbageCollector>();
     }
 
+    // Ініціалізація ядра управління пам'яттю
+    // Initialize memory management core
+    // Инициализация ядра управления памятью
+    bool MemoryCore::initialize() {
+        // Ядро управління пам'яттю вже ініціалізовано в конструкторі
+        // Memory management core is already initialized in constructor
+        // Ядро управления памятью уже инициализировано в конструкторе
+        return true;
+    }
+
     // Деструктор ядра управління пам'яттю
     // Memory management core destructor
     // Деструктор ядра управління пам'яттю
@@ -164,6 +174,14 @@ namespace Memory {
     void MemoryCore::collectGarbage() {
         std::lock_guard<std::mutex> lock(coreMutex);
         garbageCollector->collect();
+    }
+
+    // Отримати список всіх зареєстрованих блоків пам'яті
+    // Get list of all registered memory blocks
+    // Отримати список всіх зареєстрованих блоків пам'яті
+    std::vector<std::pair<void*, size_t>> MemoryCore::getAllMemoryBlocks() const {
+        std::lock_guard<std::mutex> lock(coreMutex);
+        return garbageCollector->getAllObjects();
     }
 
     // Отримати статистику використання пам'яті

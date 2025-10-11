@@ -31,6 +31,11 @@ namespace NeuroSync {
         // Деструктор
         ~ThreadPool();
 
+        // Ініціалізація пулу потоків
+        // Initialize thread pool
+        // Инициализация пула потоков
+        bool initialize();
+
         // Видалення конструктора копіювання та оператора присвоєння
         // Delete copy constructor and assignment operator
         // Удаление конструктора копирования и оператора присваивания

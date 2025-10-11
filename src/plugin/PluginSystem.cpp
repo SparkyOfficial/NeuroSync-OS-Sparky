@@ -2,6 +2,13 @@
 #include <iostream>
 #include <algorithm>
 
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <dirent.h>
+#include <sys/stat.h>
+#endif
+
 namespace NeuroSync {
 namespace Plugin {
 
@@ -211,9 +218,75 @@ namespace Plugin {
         // Load all plugins from directory
         // Загрузка всех плагинов из директории
         
-        // For now, we'll just return true and print a message
-        // In a full implementation, we would iterate through files in the directory
-        std::cout << "Loading plugins from directory is not implemented in this simplified version" << std::endl;
+        std::cout << "Loading plugins from directory: " << directoryPath << std::endl;
+        
+#ifdef _WIN32
+        // Windows approach using FindFirstFile/FindNextFile
+        WIN32_FIND_DATAA findData;
+        std::string searchPattern = directoryPath + "\\*";
+        HANDLE hFind = FindFirstFileA(searchPattern.c_str(), &findData);
+        
+        if (hFind == INVALID_HANDLE_VALUE) {
+            std::cerr << "Failed to access directory: " << directoryPath << std::endl;
+            return false;
+        }
+        
+        size_t loadedCount = 0;
+        do {
+            // Skip directories
+            if (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+                continue;
+            }
+            
+            // Check if it's a DLL file
+            std::string filename = findData.cFileName;
+            if (filename.length() > 4 && 
+                (filename.substr(filename.length() - 4) == ".dll" ||
+                 filename.substr(filename.length() - 3) == ".so")) {
+                std::string pluginPath = directoryPath + "\\" + filename;
+                std::cout << "Found plugin: " << pluginPath << std::endl;
+                // Actually load the plugin
+                if (loadPlugin(pluginPath)) {
+                    loadedCount++;
+                }
+            }
+        } while (FindNextFileA(hFind, &findData));
+        FindClose(hFind);
+        
+        std::cout << "Loaded " << loadedCount << " plugins from directory: " << directoryPath << std::endl;
+#else
+        // Unix-like approach using opendir/readdir
+        DIR* dir = opendir(directoryPath.c_str());
+        if (!dir) {
+            std::cerr << "Failed to open directory: " << directoryPath << std::endl;
+            return false;
+        }
+        
+        size_t loadedCount = 0;
+        struct dirent* entry;
+        while ((entry = readdir(dir)) != nullptr) {
+            // Skip directories
+            if (entry->d_type == DT_DIR) {
+                continue;
+            }
+            
+            // Check if it's a shared library file
+            std::string filename = entry->d_name;
+            if (filename.length() > 3 && 
+                filename.substr(filename.length() - 3) == ".so") {
+                std::string pluginPath = directoryPath + "/" + filename;
+                std::cout << "Found plugin: " << pluginPath << std::endl;
+                // Actually load the plugin
+                if (loadPlugin(pluginPath)) {
+                    loadedCount++;
+                }
+            }
+        }
+        closedir(dir);
+        
+        std::cout << "Loaded " << loadedCount << " plugins from directory: " << directoryPath << std::endl;
+#endif
+        
         return true;
     }
 

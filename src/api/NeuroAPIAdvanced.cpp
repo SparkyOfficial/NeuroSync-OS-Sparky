@@ -12,12 +12,17 @@
 // Implementation of advanced C++ interface for NeuroSync OS Sparky
 // Реализация расширенного C++ интерфейса для NeuroSync OS Sparky
 
-// Зовнішні змінні з NeuroAPI.cpp
-// External variables from NeuroAPI.cpp
-// Внешние переменные из NeuroAPI.cpp
+// Include the main API header to access the static variables
+// Включити головний заголовок API для доступу до статичних змінних
+// Включить основной заголовок API для доступа к статическим переменным
+#include "NeuroAPI.h"
+
+// Declare access to the static variables from NeuroAPI.cpp
+// Оголосити доступ до статичних змінних з NeuroAPI.cpp
+// Объявить доступ к статическим переменным из NeuroAPI.cpp
 extern NeuronManager* neuronManager;
 extern SynapseBus* synapseBus;
-extern Scheduler* scheduler;
+extern Core::Scheduler* scheduler;
 extern NeuroSync::Diagnostics::Diagnostics* diagnostics;
 
 // Створення нейрона з типом та ім'ям

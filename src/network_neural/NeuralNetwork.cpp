@@ -7,6 +7,7 @@
 #include <chrono>
 #include <fstream>
 #include <iostream>
+#include <queue>
 
 // NeuralNetwork.cpp
 // Реалізація модуля нейронних мереж для NeuroSync OS Sparky
@@ -248,10 +249,10 @@ namespace Network {
             // Training on each example
             // Обучение на каждом примере
             for (size_t i = 0; i < inputs.size(); ++i) {
-                // Передбачення
-                // Prediction
-                // Предсказание
-                std::vector<double> predicted = predict(inputs[i]);
+                // Прямий прохід
+                // Forward pass
+                // Прямой проход
+                std::vector<double> predicted = forwardPass(inputs[i]);
                 
                 // Обчислення помилки
                 // Calculate error
@@ -288,10 +289,10 @@ namespace Network {
         return true;
     }
 
-    // Передбачити результат
-    // Predict result
-    // Предсказать результат
-    std::vector<double> NeuralNetwork::predict(const std::vector<double>& input) {
+    // Прямий прохід через мережу
+    // Forward pass through the network
+    // Прямой проход через сеть
+    std::vector<double> NeuralNetwork::forwardPass(const std::vector<double>& input) {
         if (!isInitialized || layers.empty()) {
             return {};
         }
@@ -301,38 +302,89 @@ namespace Network {
             return {};
         }
         
+        // Очистити попередні значення
+        // Clear previous values
+        // Очистить предыдущие значения
+        neuronValues.clear();
+        
         // Встановити вхідні значення
         // Set input values
         // Установить входные значения
         const auto& inputLayer = layers[0];
         for (size_t i = 0; i < input.size() && i < inputLayer.neuronIds.size(); ++i) {
-            // Тут ми б встановили значення нейрона
-            // Here we would set the neuron value
-            // Здесь мы бы установили значение нейрона
+            neuronValues[inputLayer.neuronIds[i]] = input[i];
         }
         
         // Поширити сигнал через мережу
         // Propagate signal through network
         // Распространить сигнал через сеть
-        // Це спрощена реалізація
-        // This is a simplified implementation
+        for (size_t layerIdx = 1; layerIdx < layers.size(); ++layerIdx) {
+            const auto& currentLayer = layers[layerIdx];
+            const auto& previousLayer = layers[layerIdx - 1];
+            
+            // Ініціалізувати значення нейронів поточного шару
+            // Initialize neuron values of current layer
+            // Инициализировать значения нейронов текущего слоя
+            for (int neuronId : currentLayer.neuronIds) {
+                neuronValues[neuronId] = 0.0;
+            }
+            
+            // Обчислити вхідні сигнали для кожного нейрона поточного шару
+            // Calculate input signals for each neuron in current layer
+            // Вычислить входные сигналы для каждого нейрона текущего слоя
+            for (int targetNeuronId : currentLayer.neuronIds) {
+                for (int sourceNeuronId : previousLayer.neuronIds) {
+                    // Знайти зв'язок між нейронами
+                    // Find connection between neurons
+                    // Найти связь между нейронами
+                    for (const auto& connection : connections) {
+                        if (connection.sourceNeuronId == sourceNeuronId && 
+                            connection.targetNeuronId == targetNeuronId) {
+                            neuronValues[targetNeuronId] += 
+                                neuronValues[sourceNeuronId] * connection.weight;
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            // Застосувати функцію активації
+            // Apply activation function
+            // Применить функцию активации
+            for (int neuronId : currentLayer.neuronIds) {
+                double value = neuronValues[neuronId];
+                if (currentLayer.activationFunction == "sigmoid") {
+                    neuronValues[neuronId] = sigmoid(value);
+                } else if (currentLayer.activationFunction == "relu") {
+                    neuronValues[neuronId] = relu(value);
+                } else {
+                    // За замовчуванням використовуємо сигмоїдну функцію
+                    // By default, use sigmoid function
+                    // По умолчанию используем сигмоидную функцию
+                    neuronValues[neuronId] = sigmoid(value);
+                }
+            }
+        }
         
         // Отримати вихідні значення
         // Get output values
         // Получить выходные значения
         const auto& outputLayer = layers.back();
-        std::vector<double> output(outputLayer.neuronIds.size(), 0.0);
+        std::vector<double> output;
+        output.reserve(outputLayer.neuronIds.size());
         
-        // Спрощене обчислення виходу
-        // Simplified output calculation
-        for (size_t i = 0; i < output.size(); ++i) {
-            // Тут ми б обчислили вихідне значення
-            // Here we would calculate the output value
-            // Здесь мы бы вычислили выходное значение
-            output[i] = sigmoid(static_cast<double>(i) / output.size());
+        for (int neuronId : outputLayer.neuronIds) {
+            output.push_back(neuronValues[neuronId]);
         }
         
         return output;
+    }
+
+    // Передбачити результат
+    // Predict result
+    // Предсказать результат
+    std::vector<double> NeuralNetwork::predict(const std::vector<double>& input) {
+        return forwardPass(input);
     }
 
     // Отримати вихідні дані
@@ -344,11 +396,17 @@ namespace Network {
         }
         
         const auto& outputLayer = layers.back();
-        std::vector<double> output(outputLayer.neuronIds.size(), 0.0);
+        std::vector<double> output;
+        output.reserve(outputLayer.neuronIds.size());
         
-        // Тут ми б отримали справжні вихідні значення
-        // Here we would get the actual output values
-        // Здесь мы бы получили настоящие выходные значения
+        for (int neuronId : outputLayer.neuronIds) {
+            auto it = neuronValues.find(neuronId);
+            if (it != neuronValues.end()) {
+                output.push_back(it->second);
+            } else {
+                output.push_back(0.0);
+            }
+        }
         
         return output;
     }
@@ -398,7 +456,6 @@ namespace Network {
         
         // Зберегти зв'язки
         // Save connections
-        // Сохранить связи
         file << "Connections: " << connections.size() << std::endl;
         for (const auto& connection : connections) {
             file << connection.sourceNeuronId << " " << connection.targetNeuronId 
@@ -543,18 +600,113 @@ namespace Network {
     // Backpropagation
     // Обратное распространение
     void NeuralNetwork::backpropagate(const std::vector<double>& input, const std::vector<double>& target, double learningRate) {
-        // Це спрощена реалізація зворотного поширення
-        // This is a simplified implementation of backpropagation
-        // Это упрощенная реализация обратного распространения
-        
-        // Обчислити градієнти для зв'язків
-        // Calculate gradients for connections
-        // Вычислить градиенты для связей
+        // Очистити попередні градієнти
+        // Clear previous gradients
+        // Очистить предыдущие градиенты
+        neuronGradients.clear();
         for (auto& connection : connections) {
-            // Спрощене обчислення градієнта
-            // Simplified gradient calculation
-            // Упрощенное вычисление градиента
-            connection.gradient += (static_cast<double>(rand()) / RAND_MAX) * 0.1 - 0.05;
+            connection.gradient = 0.0;
+        }
+        
+        // Обчислити градієнти для вихідного шару
+        // Calculate gradients for output layer
+        // Вычислить градиенты для выходного слоя
+        const auto& outputLayer = layers.back();
+        std::vector<double> output = getOutput();
+        
+        for (size_t i = 0; i < outputLayer.neuronIds.size() && i < target.size(); ++i) {
+            int neuronId = outputLayer.neuronIds[i];
+            double outputValue = output[i];
+            double targetValue = target[i];
+            
+            // Обчислити похідну функції втрат
+            // Calculate derivative of loss function
+            // Вычислить производную функции потерь
+            double error = outputValue - targetValue;
+            
+            // Обчислити похідну функції активації
+            // Calculate derivative of activation function
+            // Вычислить производную функции активации
+            double activationDerivative = 1.0;
+            if (outputLayer.activationFunction == "sigmoid") {
+                activationDerivative = sigmoidDerivative(outputValue);
+            } else if (outputLayer.activationFunction == "relu") {
+                activationDerivative = reluDerivative(outputValue);
+            }
+            
+            // Градієнт нейрона вихідного шару
+            // Gradient of output layer neuron
+            // Градиент нейрона выходного слоя
+            neuronGradients[neuronId] = error * activationDerivative;
+        }
+        
+        // Зворотне поширення через приховані шари
+        // Backpropagate through hidden layers
+        // Обратное распространение через скрытые слои
+        for (int layerIdx = static_cast<int>(layers.size()) - 2; layerIdx >= 0; --layerIdx) {
+            const auto& currentLayer = layers[layerIdx];
+            const auto& nextLayer = layers[layerIdx + 1];
+            
+            // Обчислити градієнти для нейронів поточного шару
+            // Calculate gradients for neurons in current layer
+            // Вычислить градиенты для нейронов текущего слоя
+            for (size_t i = 0; i < currentLayer.neuronIds.size(); ++i) {
+                int neuronId = currentLayer.neuronIds[i];
+                double gradient = 0.0;
+                
+                // Сума градієнтів від наступного шару
+                // Sum of gradients from next layer
+                // Сумма градиентов от следующего слоя
+                for (int nextNeuronId : nextLayer.neuronIds) {
+                    // Знайти зв'язок між нейронами
+                    // Find connection between neurons
+                    // Найти связь между нейронами
+                    for (const auto& connection : connections) {
+                        if (connection.sourceNeuronId == neuronId && 
+                            connection.targetNeuronId == nextNeuronId) {
+                            auto it = neuronGradients.find(nextNeuronId);
+                            if (it != neuronGradients.end()) {
+                                gradient += it->second * connection.weight;
+                            }
+                            break;
+                        }
+                    }
+                }
+                
+                // Обчислити похідну функції активації
+                // Calculate derivative of activation function
+                // Вычислить производную функции активации
+                double activationDerivative = 1.0;
+                double neuronValue = 0.0;
+                
+                auto valueIt = neuronValues.find(neuronId);
+                if (valueIt != neuronValues.end()) {
+                    neuronValue = valueIt->second;
+                }
+                
+                if (currentLayer.activationFunction == "sigmoid") {
+                    activationDerivative = sigmoidDerivative(neuronValue);
+                } else if (currentLayer.activationFunction == "relu") {
+                    activationDerivative = reluDerivative(neuronValue);
+                }
+                
+                // Градієнт нейрона поточного шару
+                // Gradient of current layer neuron
+                // Градиент нейрона текущего слоя
+                neuronGradients[neuronId] = gradient * activationDerivative;
+            }
+        }
+        
+        // Оновити градієнти зв'язків
+        // Update connection gradients
+        // Обновить градиенты связей
+        for (auto& connection : connections) {
+            auto sourceIt = neuronValues.find(connection.sourceNeuronId);
+            auto gradientIt = neuronGradients.find(connection.targetNeuronId);
+            
+            if (sourceIt != neuronValues.end() && gradientIt != neuronGradients.end()) {
+                connection.gradient += sourceIt->second * gradientIt->second;
+            }
         }
     }
 
@@ -571,6 +723,20 @@ namespace Network {
     double NeuralNetwork::sigmoidDerivative(double x) const {
         double s = sigmoid(x);
         return s * (1.0 - s);
+    }
+
+    // ReLU функція
+    // ReLU function
+    // Функция ReLU
+    double NeuralNetwork::relu(double x) const {
+        return std::max(0.0, x);
+    }
+
+    // Похідна ReLU функції
+    // ReLU derivative
+    // Производная функции ReLU
+    double NeuralNetwork::reluDerivative(double x) const {
+        return x > 0.0 ? 1.0 : 0.0;
     }
 
     // Отримати поточний час у мілісекундах

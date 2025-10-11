@@ -82,6 +82,16 @@ namespace NeuroSync {
         }
     }
 
+    // Ініціалізація пулу потоків
+    // Initialize thread pool
+    // Инициализация пула потоков
+    bool ThreadPool::initialize() {
+        // Пул потоків вже ініціалізовано в конструкторі
+        // Thread pool is already initialized in constructor
+        // Пул потоков уже инициализирован в конструкторе
+        return true;
+    }
+
     // Деструктор
     // Destructor
     // Деструктор

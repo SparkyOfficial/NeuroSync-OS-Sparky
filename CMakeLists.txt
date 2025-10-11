@@ -8,7 +8,7 @@ project(NeuroSync_OS_Sparky VERSION 1.0.0 LANGUAGES CXX)
 # C++ standard
 # Стандарт C++
 # Стандарт C++
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Compiler flags
@@ -44,6 +44,17 @@ add_subdirectory(src/visualization)
 add_subdirectory(src/testing)
 add_subdirectory(src/benchmark)
 add_subdirectory(src/docgen)
+add_subdirectory(src/ml_pipeline)
+add_subdirectory(src/data_processing)
+add_subdirectory(src/model_management)
+add_subdirectory(src/performance_optimization)
+add_subdirectory(src/distributed_computing)
+add_subdirectory(src/analytics)
+add_subdirectory(src/nlp)
+add_subdirectory(src/cv)
+add_subdirectory(src/audio)
+add_subdirectory(src/advanced_nn)
+add_subdirectory(src/quantum)
 
 # Examples
 # Приклади
@@ -92,6 +103,14 @@ add_executable(threadpool_example src/examples/threadpool_example.cpp)
 target_link_libraries(threadpool_example PRIVATE threadpool core)
 target_include_directories(threadpool_example PRIVATE src/threadpool)
 
+add_executable(scheduler_example src/examples/scheduler_example.cpp)
+target_link_libraries(scheduler_example PRIVATE core)
+target_include_directories(scheduler_example PRIVATE src/core)
+
+add_executable(weighted_fair_queuing_example src/examples/weighted_fair_queuing_example.cpp)
+target_link_libraries(weighted_fair_queuing_example PRIVATE core)
+target_include_directories(weighted_fair_queuing_example PRIVATE src/core)
+
 add_executable(filesystem_example src/examples/filesystem_example.cpp)
 target_link_libraries(filesystem_example PRIVATE filesystem core)
 target_include_directories(filesystem_example PRIVATE src/filesystem)
@@ -107,6 +126,42 @@ target_include_directories(security_example PRIVATE src/security)
 add_executable(visualization_example src/examples/visualization_example.cpp)
 target_link_libraries(visualization_example PRIVATE visualization core)
 target_include_directories(visualization_example PRIVATE src/visualization)
+
+add_executable(ml_pipeline_example src/examples/ml_pipeline_example.cpp)
+target_link_libraries(ml_pipeline_example PRIVATE ml_pipeline data_processing model_management neural_network core)
+target_include_directories(ml_pipeline_example PRIVATE src/ml_pipeline src/data_processing src/model_management src/network_neural)
+
+add_executable(performance_optimization_example src/examples/performance_optimization_example.cpp)
+target_link_libraries(performance_optimization_example PRIVATE performance_optimization core threadpool memory diagnostics)
+target_include_directories(performance_optimization_example PRIVATE src/performance_optimization src/core src/threadpool src/memory src/diagnostics)
+
+add_executable(distributed_computing_example src/examples/distributed_computing_example.cpp)
+target_link_libraries(distributed_computing_example PRIVATE distributed_computing network core threadpool security)
+target_include_directories(distributed_computing_example PRIVATE src/distributed_computing src/network src/core src/threadpool src/security)
+
+add_executable(analytics_example src/examples/analytics_example.cpp)
+target_link_libraries(analytics_example PRIVATE analytics diagnostics core memory logging)
+target_include_directories(analytics_example PRIVATE src/analytics src/diagnostics src/core src/memory src/logging)
+
+add_executable(ai_assistant_example src/examples/ai_assistant_example.cpp)
+target_link_libraries(ai_assistant_example PRIVATE neuron synapse neural_network memory event logging config core)
+target_include_directories(ai_assistant_example PRIVATE src/neuron src/synapse src/network_neural src/memory src/event src/logging src/config)
+
+add_executable(nlp_example src/examples/nlp_example.cpp)
+target_link_libraries(nlp_example PRIVATE nlp neuron neural_network core)
+target_include_directories(nlp_example PRIVATE src/nlp src/neuron src/network_neural)
+
+add_executable(cv_example src/examples/cv_example.cpp)
+target_link_libraries(cv_example PRIVATE cv neuron neural_network core)
+target_include_directories(cv_example PRIVATE src/cv src/neuron src/network_neural)
+
+add_executable(audio_example src/examples/audio_example.cpp)
+target_link_libraries(audio_example PRIVATE audio neuron neural_network core)
+target_include_directories(audio_example PRIVATE src/audio src/neuron src/network_neural)
+
+add_executable(advanced_nn_example src/examples/advanced_nn_example.cpp)
+target_link_libraries(advanced_nn_example PRIVATE advanced_nn neural_network neuron core)
+target_include_directories(advanced_nn_example PRIVATE src/advanced_nn src/network_neural src/neuron)
 
 # Tests
 # Тести
@@ -149,41 +204,16 @@ target_include_directories(test_event_system PRIVATE src/event)
 add_test(NAME test_event_system COMMAND test_event_system)
 
 add_executable(test_config src/tests/test_config_manager.cpp)
-target_link_libraries(test_config PRIVATE config core)
 target_include_directories(test_config PRIVATE src/config)
 add_test(NAME test_config COMMAND test_config)
 
-add_executable(test_plugin src/tests/test_plugin_system.cpp)
-target_link_libraries(test_plugin PRIVATE plugin core)
-target_include_directories(test_plugin PRIVATE src/plugin)
-add_test(NAME test_plugin COMMAND test_plugin)
+add_executable(test_advanced_nn src/tests/test_advanced_nn.cpp)
+target_link_libraries(test_advanced_nn PRIVATE advanced_nn neural_network neuron synapse api core)
+target_include_directories(test_advanced_nn PRIVATE src/advanced_nn src/network_neural src/neuron src/synapse src/api)
+add_test(NAME test_advanced_nn COMMAND test_advanced_nn)
 
-add_executable(test_logging src/tests/test_logging_system.cpp)
-target_link_libraries(test_logging PRIVATE logging core)
-target_include_directories(test_logging PRIVATE src/logging)
-add_test(NAME test_logging COMMAND test_logging)
-
-add_executable(test_threadpool src/tests/test_threadpool_system.cpp)
-target_link_libraries(test_threadpool PRIVATE threadpool neuron synapse core)
-target_include_directories(test_threadpool PRIVATE src/threadpool)
-add_test(NAME test_threadpool COMMAND test_threadpool)
-
-add_executable(test_filesystem src/tests/test_filesystem.cpp)
-target_link_libraries(test_filesystem PRIVATE filesystem core)
-target_include_directories(test_filesystem PRIVATE src/filesystem)
-add_test(NAME test_filesystem COMMAND test_filesystem)
-
-add_executable(test_network src/tests/test_network.cpp)
-target_link_libraries(test_network PRIVATE network core)
-target_include_directories(test_network PRIVATE src/network)
-add_test(NAME test_network COMMAND test_network)
-
-add_executable(test_security src/tests/test_security.cpp)
-target_link_libraries(test_security PRIVATE security core)
-target_include_directories(test_security PRIVATE src/security)
-add_test(NAME test_security COMMAND test_security)
-
-add_executable(test_visualization src/tests/test_visualization.cpp)
-target_link_libraries(test_visualization PRIVATE visualization core)
-target_include_directories(test_visualization PRIVATE src/visualization)
-add_test(NAME test_visualization COMMAND test_visualization)
+# Installation
+# Встановлення
+# Установка
+install(TARGETS neuron synapse api core memory diagnostics plugin logging threadpool filesystem network security visualization event config neural_network
+        DESTINATION lib)

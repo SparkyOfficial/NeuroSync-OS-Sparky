@@ -7,6 +7,7 @@
 # Добавление библиотеки security
 add_library(security
     SecurityModule.cpp
+    SecurityManager.cpp
 )
 
 # Встановлення властивостей C++14
@@ -49,6 +50,6 @@ install(TARGETS security
 # Встановлення заголовочних файлів
 # Install header files
 # Установка заголовочных файлов
-install(FILES SecurityModule.h
+install(FILES SecurityModule.h SecurityManager.h
     DESTINATION include/security
 )

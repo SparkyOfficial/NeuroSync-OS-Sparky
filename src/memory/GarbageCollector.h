@@ -79,6 +79,11 @@ namespace Memory {
         size_t getCollectedObjects() const { return collectedObjects; }
         size_t getTotalMemoryFreed() const { return totalMemoryFreed; }
         
+        // Отримати список всіх зареєстрованих об'єктів
+        // Get list of all registered objects
+        // Отримати список всіх зареєстрованих об'єктів
+        std::vector<std::pair<void*, size_t>> getAllObjects() const;
+        
     private:
         std::unordered_map<void*, GCObject*> objects;  // Зареєстровані об'єкти
         std::unordered_set<GCObject*> roots;           // Кореневі об'єкти

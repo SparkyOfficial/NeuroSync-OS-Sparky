@@ -12,9 +12,20 @@
 #include "synapse/SynapseBus.h"
 #include "memory/MemoryCore.h"
 #include "diagnostics/Diagnostics.h"
-
-// TODO: Додати всі необхідні заголовки
-// TODO: Include all necessary headers
-// TODO: Додати всі необхідні заголовки
+#include "analytics/RealTimeAnalytics.h"
+#include "config/ConfigurationManager.h"
+#include "event/EventSystem.h"
+#include "filesystem/FileSystem.h"
+#include "logging/LoggingSystem.h"
+#include "security/SecurityModule.h"
+#include "threadpool/ThreadPool.h"
+#include "visualization/VisualizationModule.h"
+#include "network/NetworkCommunication.h"
+#include "network_neural/NeuralNetwork.h"
+#include "distributed_computing/DistributedComputing.h"
+#include "ml_pipeline/MLPipeline.h"
+#include "data_processing/DataProcessor.h"
+#include "model_management/ModelManager.h"
+#include "performance_optimization/PerformanceOptimization.h"
 
 #endif // NEURO_SYNC_H

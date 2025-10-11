@@ -157,14 +157,21 @@ namespace Network {
         NetworkStatistics statistics;               // Статистика мережі / Network statistics / Статистика сети
         bool isInitialized;                         // Прапор ініціалізації / Initialization flag / Флаг инициализации
         
+        // Data structures for backpropagation
+        std::map<int, double> neuronValues;         // Values of neurons during forward pass
+        std::map<int, double> neuronGradients;      // Gradients of neurons during backpropagation
+        
         // Внутрішні методи
         // Internal methods
         // Внутренние методы
         void initializeStatistics();
         double calculateLoss(const std::vector<double>& predicted, const std::vector<double>& actual);
         void backpropagate(const std::vector<double>& input, const std::vector<double>& target, double learningRate);
+        std::vector<double> forwardPass(const std::vector<double>& input);
         double sigmoid(double x) const;
         double sigmoidDerivative(double x) const;
+        double relu(double x) const;
+        double reluDerivative(double x) const;
         long long getCurrentTimeMillis() const;
     };
 

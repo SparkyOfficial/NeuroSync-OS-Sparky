@@ -2,6 +2,7 @@
 #define NEURO_API_ADVANCED_H
 
 #include <cstddef>
+#include "NeuroAPI.h"
 
 // NeuroAPIAdvanced.h
 // Розширений C++ інтерфейс для NeuroSync OS Sparky
@@ -11,39 +12,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-// Типи нейронів
-// Neuron types
-// Типы нейронов
-typedef enum {
-    NEURON_TYPE_INPUT = 0,
-    NEURON_TYPE_HIDDEN = 1,
-    NEURON_TYPE_OUTPUT = 2,
-    NEURON_TYPE_PROCESSING = 3,
-    NEURON_TYPE_MEMORY = 4
-} NeuroSyncNeuronType;
-
-// Пріоритети повідомлень
-// Message priorities
-// Приоритеты сообщений
-typedef enum {
-    MESSAGE_PRIORITY_LOW = 0,
-    MESSAGE_PRIORITY_NORMAL = 1,
-    MESSAGE_PRIORITY_HIGH = 2,
-    MESSAGE_PRIORITY_CRITICAL = 3
-} NeuroSyncMessagePriority;
-
-// Статистика системи
-// System statistics
-// Статистика системы
-typedef struct {
-    size_t totalMessagesSent;
-    size_t totalMessagesReceived;
-    size_t highPriorityMessages;
-    size_t criticalPriorityMessages;
-    size_t totalConnections;
-    size_t activeConnections;
-} NeuroSyncSystemStatistics;
 
 // Створення нейрона з типом та ім'ям
 // Create a neuron with type and name

@@ -113,6 +113,12 @@ namespace Event {
         return publishEvent(event);
     }
 
+    void EventSystem::broadcastEvent(const std::string& eventType, const std::any& eventData) {
+        // TODO: Implement proper broadcast mechanism
+        // For now, this is the same as publishEvent
+        publishEvent(eventType, eventData);
+    }
+
     bool EventSystem::subscribe(int neuronId, EventType type) {
         std::lock_guard<std::mutex> lock(subscriptionsMutex);
         

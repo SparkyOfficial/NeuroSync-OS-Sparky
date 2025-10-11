@@ -213,29 +213,37 @@ namespace Core {
         // Обновление веса задачи в расширенном планировщике
         // Update task weight in advanced scheduler
         // Оновлення ваги завдання в розширеному планувальнику
+    
+        if (!schedulingAlgorithm || !taskManager) {
+            return false;
+        }
         
-        if (!running || !schedulingAlgorithm) {
-            return false; // Планировщик не инициализирован или не запущен / Scheduler not initialized or not running / Планувальник не ініціалізовано або не запущено
+        Utils::Task* task = taskManager->getTask(taskId);
+        if (task == nullptr) {
+            return false;
         }
         
         // Обновление веса задачи в менеджере задач
         // Update task weight in task manager
         // Оновлення ваги завдання в менеджері завдань
-        bool success = taskManager->updateTaskWeight(taskId, weight);
-        if (!success) {
-            return false;
-        }
+        task->weight = weight;
         
         // Для алгоритма Weighted Fair Queuing обновляем вес
         // For Weighted Fair Queuing algorithm, update weight
         // Для алгоритму Weighted Fair Queuing оновлюємо вагу
         if (currentAlgorithmType == SchedulingAlgorithmType::WEIGHTED_FAIR_QUEUING) {
-            // Здесь нужно привести schedulingAlgorithm к соответствующему типу
-            // Here we need to cast schedulingAlgorithm to the appropriate type
-            // Тут потрібно привести schedulingAlgorithm до відповідного типу
-            // Пока оставим это как TODO, так как для демонстрации достаточно
-            // For now we'll leave this as TODO, as it's sufficient for demonstration
-            // Поки залишим це як TODO, оскільки для демонстрації достатньо
+            // Приведение schedulingAlgorithm к типу WeightedFairQueuingScheduling
+            // Cast schedulingAlgorithm to WeightedFairQueuingScheduling type
+            // Приведення schedulingAlgorithm до типу WeightedFairQueuingScheduling
+            NeuroSync::Core::Algorithms::WeightedFairQueuingScheduling* wfqAlgorithm = 
+                dynamic_cast<NeuroSync::Core::Algorithms::WeightedFairQueuingScheduling*>(schedulingAlgorithm.get());
+            
+            if (wfqAlgorithm) {
+                // Обновление веса задачи в алгоритме WFQ
+                // Update task weight in WFQ algorithm
+                // Оновлення ваги завдання в алгоритмі WFQ
+                wfqAlgorithm->setTaskWeight(taskId, weight);
+            }
         }
         
         return true;
@@ -258,7 +266,7 @@ namespace Core {
         // Установка алгоритма планирования в расширенном планировщике
         // Set scheduling algorithm in advanced scheduler
         // Встановлення алгоритму планування в розширеному планувальнику
-        
+    
         if (!running) {
             return false; // Планировщик не запущен / Scheduler is not running / Планувальник не запущений
         }
@@ -281,12 +289,37 @@ namespace Core {
         // Перенесення завдань зі старого алгоритму до нового
         {
             std::lock_guard<std::mutex> lock(schedulerMutex);
-            // Здесь нужно реализовать перенос задач
-            // Here we need to implement task transfer
-            // Тут потрібно реалізувати перенесення завдань
-            // Пока оставим это как TODO, так как для демонстрации достаточно
-            // For now we'll leave this as TODO, as it's sufficient for demonstration
-            // Поки залишим це як TODO, оскільки для демонстрації достатньо
+            // Реализация переноса задач
+            // Implementation of task transfer
+            // Реалізація перенесення завдань
+            if (taskManager && schedulingAlgorithm) {
+                // Получение всех задач из менеджера задач
+                // Get all tasks from task manager
+                // Отримання всіх завдань з менеджера завдань
+                const auto& tasks = taskManager->getAllTasks();
+                
+                // Добавление задач в новый алгоритм
+                // Add tasks to new algorithm
+                // Додавання завдань до нового алгоритму
+                for (const auto& taskPtr : tasks) {
+                    const Utils::Task* task = taskPtr.get();
+                    if (task && task->status == Utils::TaskStatus::PENDING) {
+                        newAlgorithm->addTask(task->id, task->priority);
+                        
+                        // Для алгоритма Weighted Fair Queuing также устанавливаем вес
+                        // For Weighted Fair Queuing algorithm, also set weight
+                        // Для алгоритму Weighted Fair Queuing також встановлюємо вагу
+                        if (algorithmType == SchedulingAlgorithmType::WEIGHTED_FAIR_QUEUING) {
+                            NeuroSync::Core::Algorithms::WeightedFairQueuingScheduling* wfqAlgorithm = 
+                                dynamic_cast<NeuroSync::Core::Algorithms::WeightedFairQueuingScheduling*>(newAlgorithm.get());
+                            
+                            if (wfqAlgorithm) {
+                                wfqAlgorithm->setTaskWeight(task->id, task->weight);
+                            }
+                        }
+                    }
+                }
+            }
         }
         
         // Замена алгоритма
@@ -433,10 +466,45 @@ namespace Core {
                 }
             }
             
+            // Очистка завершенных потоков
+            // Clean up completed threads
+            // Очищення завершених потоків
+            {
+                std::lock_guard<std::mutex> lock(schedulerMutex);
+                auto it = runningTasks.begin();
+                while (it != runningTasks.end()) {
+                    if (!it->second.joinable() || 
+                        taskManager->getTask(it->first)->status != Utils::TaskStatus::RUNNING) {
+                        // Задача завершена, удаляем поток
+                        // Task completed, remove thread
+                        // Завдання завершено, видаляємо потік
+                        if (it->second.joinable()) {
+                            it->second.join();
+                        }
+                        it = runningTasks.erase(it);
+                    } else {
+                        ++it;
+                    }
+                }
+            }
+            
             // Небольшая задержка для предотвращения излишней нагрузки на CPU
             // Small delay to prevent excessive CPU load
             // Невелика затримка для запобігання надмірному навантаженню на CPU
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        }
+        
+        // Ожидание завершения всех оставшихся потоков
+        // Wait for all remaining threads to complete
+        // Очікування завершення всіх решти потоків
+        {
+            std::lock_guard<std::mutex> lock(schedulerMutex);
+            for (auto& pair : runningTasks) {
+                if (pair.second.joinable()) {
+                    pair.second.join();
+                }
+            }
+            runningTasks.clear();
         }
     }
 
@@ -444,7 +512,7 @@ namespace Core {
         // Выполнение задачи
         // Execute a task
         // Виконання завдання
-        
+    
         Utils::Task* task = taskManager->getTask(taskId);
         if (task == nullptr) {
             return;
@@ -479,19 +547,9 @@ namespace Core {
         // Оновлення статистики
         updateStatistics(taskId, finalStatus, executionTime);
         
-        // Удаление задачи из карты выполняемых задач
-        // Remove task from map of running tasks
-        // Видалення завдання з карти виконуваних завдань
-        {
-            std::lock_guard<std::mutex> lock(schedulerMutex);
-            auto it = runningTasks.find(taskId);
-            if (it != runningTasks.end()) {
-                if (it->second.joinable()) {
-                    it->second.join();
-                }
-                runningTasks.erase(it);
-            }
-        }
+        // Удаление задачи из карты выполняемых задач будет выполнено в основном цикле
+        // Removing task from map of running tasks will be done in main loop
+        // Видалення завдання з карти виконуваних завдань буде виконано в основному циклі
     }
 
     void AdvancedScheduler::updateStatistics(int taskId, Utils::TaskStatus status, long long executionTime) {
