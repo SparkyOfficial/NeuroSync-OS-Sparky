@@ -1,7 +1,6 @@
 #include "../NeuroSync.h"
+#include <cstring>
 #include <iostream>
-#include <thread>
-#include <chrono>
 
 // simple_example.cpp
 // Простий приклад використання NeuroSync OS Sparky

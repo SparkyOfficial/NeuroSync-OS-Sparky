@@ -102,6 +102,11 @@ namespace Event {
         // Опубликовать событие асинхронно
         bool publishEventAsync(const Event& event);
         
+        // Транслювати подію
+        // Broadcast event
+        // Транслировать событие
+        void broadcastEvent(const std::string& eventType, const std::string& eventData);
+        
         // Підписатися на події
         // Subscribe to events
         // Подписаться на события
@@ -157,15 +162,30 @@ namespace Event {
         // Очередь событий
         std::queue<Event> eventQueue;
         
+        // Асинхронна черга подій
+        // Async event queue
+        // Асинхронная очередь событий
+        std::queue<Event> asyncEventQueue;
+        
         // Мьютекс для синхронізації черги
         // Mutex for queue synchronization
         // Мьютекс для синхронизации очереди
         mutable std::mutex queueMutex;
         
+        // Мьютекс для синхронізації асинхронної черги
+        // Mutex for async queue synchronization
+        // Мьютекс для синхронизации асинхронной очереди
+        mutable std::mutex asyncQueueMutex;
+        
         // Умовна змінна для очікування подій
         // Condition variable for waiting events
         // Условная переменная для ожидания событий
         std::condition_variable eventCondition;
+        
+        // Умовна змінна для очікування асинхронних подій
+        // Condition variable for waiting async events
+        // Условная переменная для ожидания асинхронных событий
+        std::condition_variable asyncEventCondition;
         
         // Обробники подій за типом
         // Event handlers by type
@@ -192,6 +212,11 @@ namespace Event {
         // Поток обработки событий
         std::thread processingThread;
         
+        // Потік обробки асинхронних подій
+        // Async event processing thread
+        // Поток обработки асинхронных событий
+        std::thread asyncProcessingThread;
+        
         // Прапор запуску системи
         // System running flag
         // Флаг запуска системы
@@ -217,6 +242,7 @@ namespace Event {
         // Internal methods
         // Внутренние методы
         void processEvents();
+        void processAsyncEvents();
         long long getCurrentTimeMillis() const;
         void updateStatistics(const Event& event, bool processed);
         bool isSubscribed(int neuronId, EventType type) const;

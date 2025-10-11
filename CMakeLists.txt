@@ -55,6 +55,9 @@ add_subdirectory(src/cv)
 add_subdirectory(src/audio)
 add_subdirectory(src/advanced_nn)
 add_subdirectory(src/quantum)
+add_subdirectory(src/database)
+add_subdirectory(src/advanced_analytics)
+add_subdirectory(src/robotics)
 
 # Examples
 # Приклади
@@ -163,6 +166,18 @@ add_executable(advanced_nn_example src/examples/advanced_nn_example.cpp)
 target_link_libraries(advanced_nn_example PRIVATE advanced_nn neural_network neuron core)
 target_include_directories(advanced_nn_example PRIVATE src/advanced_nn src/network_neural src/neuron)
 
+add_executable(database_example src/examples/database_example.cpp)
+target_link_libraries(database_example PRIVATE database neuron synapse core)
+target_include_directories(database_example PRIVATE src/database src/neuron src/synapse)
+
+add_executable(advanced_analytics_example src/examples/advanced_analytics_example.cpp)
+target_link_libraries(advanced_analytics_example PRIVATE advanced_analytics neuron neural_network core)
+target_include_directories(advanced_analytics_example PRIVATE src/advanced_analytics src/neuron src/network_neural)
+
+add_executable(robotics_example src/examples/robotics_example.cpp)
+target_link_libraries(robotics_example PRIVATE robotics neuron neural_network event core)
+target_include_directories(robotics_example PRIVATE src/robotics src/neuron src/network_neural src/event)
+
 # Tests
 # Тести
 # Тесты
@@ -212,8 +227,23 @@ target_link_libraries(test_advanced_nn PRIVATE advanced_nn neural_network neuron
 target_include_directories(test_advanced_nn PRIVATE src/advanced_nn src/network_neural src/neuron src/synapse src/api)
 add_test(NAME test_advanced_nn COMMAND test_advanced_nn)
 
+add_executable(test_database src/tests/test_database.cpp)
+target_link_libraries(test_database PRIVATE database neuron synapse core)
+target_include_directories(test_database PRIVATE src/database src/neuron src/synapse)
+add_test(NAME test_database COMMAND test_database)
+
+add_executable(test_advanced_analytics src/tests/test_advanced_analytics.cpp)
+target_link_libraries(test_advanced_analytics PRIVATE advanced_analytics neuron neural_network core)
+target_include_directories(test_advanced_analytics PRIVATE src/advanced_analytics src/neuron src/network_neural)
+add_test(NAME test_advanced_analytics COMMAND test_advanced_analytics)
+
+add_executable(test_robotics src/tests/test_robotics.cpp)
+target_link_libraries(test_robotics PRIVATE robotics neuron neural_network event core)
+target_include_directories(test_robotics PRIVATE src/robotics src/neuron src/network_neural src/event)
+add_test(NAME test_robotics COMMAND test_robotics)
+
 # Installation
 # Встановлення
 # Установка
-install(TARGETS neuron synapse api core memory diagnostics plugin logging threadpool filesystem network security visualization event config neural_network
+install(TARGETS neuron synapse api core memory diagnostics plugin logging threadpool filesystem network security visualization event config neural_network advanced_nn database advanced_analytics robotics
         DESTINATION lib)

@@ -147,6 +147,10 @@ namespace Network {
         
         NetworkStatistics getStatistics() const;
         
+        // Getter methods for accessing private layer details
+        const std::vector<NetworkLayer>& getLayers() const;
+        const std::vector<ConnectionWeight>& getConnections() const;
+        
     private:
         NetworkType networkType;                    // Тип мережі / Network type / Тип сети
         std::string networkName;                    // Ім'я мережі / Network name / Имя сети

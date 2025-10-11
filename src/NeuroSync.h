@@ -26,6 +26,6 @@
 #include "ml_pipeline/MLPipeline.h"
 #include "data_processing/DataProcessor.h"
 #include "model_management/ModelManager.h"
-#include "performance_optimization/PerformanceOptimization.h"
+#include "performance_optimization/PerformanceOptimizer.h"
 
 #endif // NEURO_SYNC_H

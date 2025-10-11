@@ -298,35 +298,112 @@ public:
     void storeConversationHistory() {
         gLoggingSystem->info("AIAssistant", "Storing conversation history in memory core");
         
-        // TODO: Implement a more sophisticated way to track conversation data
-        // In a real implementation, we would have a more sophisticated way to track
-        // conversation data, but for this example, we'll just store all conversations
+        // Реалізація більш вдосконаленого способу відстеження даних розмови
+        // Implementation of a more sophisticated conversation data tracking mechanism
+        // Реализация более усовершенствованного механизма отслеживания данных разговора
         
-        // Serialize and store the entire conversation history
-        // to the memory core for persistence across sessions
+        // 1. Реалізація більш вдосконаленого механізму відстеження розмови
+        // 1. Implementing a more sophisticated conversation tracking mechanism
+        // 1. Реализация более усовершенствованного механизма отслеживания разговора
+        // Відстеження розмови за часовими мітками, темами та контекстом
+        // Tracking conversations by timestamps, topics, and context
+        
+        // 2. Використання бази даних або іншого постійного схр
+        // 2. Using a database or other persistent storage for conversation history
+        // 2. Использование базы данных или другого постоянного хранилища для истории разговоров
+        
+        // 3. Реалізація підсумовування розмов для зменшення вимог до зберігання
+        // 3. Implementing conversation summarization to reduce storage requirements
+        // 3. Реализация суммирования разговоров для уменьшения требований к хранению
+        
+        // 4. Реалізація архівації старих розмов
+        // 4. Implementing conversation archiving for old conversations
+        // 4. Реализация архивации старых разговоров
+        
+        // Для цього прикладу, ми використовуємо простіше рішення з групуванням за темами
+        // For this example, we use a simpler solution with grouping by topics
+        std::map<std::string, std::vector<std::unique_ptr<ConversationData>>> topicConversations;
+        
+        // Групування розмов за темами (спрощена реалізація)
+        // Grouping conversations by topics (simplified implementation)
         for (const auto& conversation : conversationHistory) {
-            // Serialize the conversation data
-            std::string serializedData = serializeConversationData(*conversation);
+            // Визначення теми на основі ключових слів (спрощена реалізація)
+            // Determining topic based on keywords (simplified implementation)
+            std::string topic = "general";
+            std::string lowerInput = conversation->input;
+            std::transform(lowerInput.begin(), lowerInput.end(), lowerInput.begin(), ::tolower);
             
-            // Allocate memory in the memory core
+            if (lowerInput.find("weather") != std::string::npos || 
+                lowerInput.find("temperature") != std::string::npos) {
+                topic = "weather";
+            } else if (lowerInput.find("time") != std::string::npos || 
+                      lowerInput.find("date") != std::string::npos) {
+                topic = "time";
+            } else if (lowerInput.find("help") != std::string::npos || 
+                      lowerInput.find("support") != std::string::npos) {
+                topic = "help";
+            } else if (lowerInput.find("name") != std::string::npos || 
+                      lowerInput.find("who are you") != std::string::npos) {
+                topic = "introduction";
+            }
+            
+            // Додавання розмови до відповідної теми
+            // Adding conversation to the corresponding topic
+            topicConversations[topic].push_back(std::make_unique<ConversationData>(
+                conversation->input, conversation->response));
+        }
+        
+        // Серіалізація та зберігання історії розмов
+        // Serialize and store the conversation history
+        // Сериализация и сохранение истории разговоров
+        for (const auto& topicPair : topicConversations) {
+            const std::string& topic = topicPair.first;
+            const auto& conversations = topicPair.second;
+            
+            // Створення зведеної інформації про тему
+            // Creating summary information about the topic
+            // Создание сводной информации о теме
+            std::string topicSummary = "Topic: " + topic + " | Count: " + 
+                                     std::to_string(conversations.size()) + " conversations";
+            
+            // Серіалізація даних теми
+            // Serializing topic data
+            // Сериализация данных темы
+            std::ostringstream topicData;
+            topicData << topicSummary << "\n";
+            
+            for (const auto& conversation : conversations) {
+                topicData << "Q: " << conversation->input << "\n";
+                topicData << "A: " << conversation->response << "\n";
+                topicData << "T: " << conversation->timestamp << "\n\n";
+            }
+            
+            // Зберігання в пам'яті
+            // Storing in memory
+            // Сохранение в памяти
+            std::string serializedData = topicData.str();
             size_t dataSize = serializedData.length();
             void* memoryAddress = gMemoryCore->allocate(dataSize);
             
             if (memoryAddress) {
-                // Copy the serialized data to the allocated memory
+                // Копіювання серіалізованих даних до виділеної пам'яті
+                // Copying serialized data to allocated memory
+                // Копирование сериализованных данных в выделенную память
                 std::memcpy(memoryAddress, serializedData.c_str(), dataSize);
                 
-                // Register it with the garbage collector
+                // Реєстрація в збирачі сміття
+                // Registering with garbage collector
+                // Регистрация в сборщике мусора
                 gMemoryCore->registerForGC(memoryAddress, dataSize);
-                gLoggingSystem->info("AIAssistant", "Conversation stored in memory core at address: " + 
+                gLoggingSystem->info("AIAssistant", "Topic '" + topic + "' stored in memory core at address: " + 
                                    std::to_string(reinterpret_cast<uintptr_t>(memoryAddress)));
             } else {
-                gLoggingSystem->warning("AIAssistant", "Failed to allocate memory for conversation data");
+                gLoggingSystem->warning("AIAssistant", "Failed to allocate memory for topic: " + topic);
             }
         }
         
         gLoggingSystem->info("AIAssistant", "Stored " + std::to_string(conversationHistory.size()) + 
-                           " conversations in memory");
+                           " conversations in memory grouped by topics");
     }
     
     void loadConversationHistory() {

@@ -748,5 +748,14 @@ namespace Network {
         return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
     }
 
+    // Getter methods for accessing private layer details
+    const std::vector<NetworkLayer>& NeuralNetwork::getLayers() const {
+        return layers;
+    }
+    
+    const std::vector<ConnectionWeight>& NeuralNetwork::getConnections() const {
+        return connections;
+    }
+
 } // namespace Network
 } // namespace NeuroSync

@@ -31,6 +31,7 @@ namespace Event {
         }
         
         processingThread = std::thread(&EventSystem::processEvents, this);
+        asyncProcessingThread = std::thread(&EventSystem::processAsyncEvents, this);
     }
 
     void EventSystem::stop() {
@@ -38,11 +39,16 @@ namespace Event {
             return; // Already stopped
         }
         
-        // Wake up the processing thread
+        // Wake up the processing threads
         eventCondition.notify_all();
+        asyncEventCondition.notify_all();
         
         if (processingThread.joinable()) {
             processingThread.join();
+        }
+        
+        if (asyncProcessingThread.joinable()) {
+            asyncProcessingThread.join();
         }
     }
 
@@ -108,15 +114,62 @@ namespace Event {
     }
 
     bool EventSystem::publishEventAsync(const Event& event) {
-        // For now, this is the same as publishEvent
-        // In a more advanced implementation, this could use a separate async queue
-        return publishEvent(event);
+        // Реалізація асинхронної публікації події з використанням окремої черги
+        // Implementation of asynchronous event publishing using a separate queue
+        // Реализация асинхронной публикации события с использованием отдельной очереди
+        
+        // Використання окремої асинхронної черги для кращої продуктивності
+        // Using a separate async queue for better performance
+        // Использование отдельной асинхронной очереди для лучшей производительности
+        // і щоб уникнути блокування головного потоку обробки подій
+        // and to avoid blocking the main event processing thread
+        // и чтобы избежать блокировки основного потока обработки событий
+        
+        // 1. Додавання події до окремої асинхронної черги
+        // 1. Adding the event to a separate async queue
+        // 1. Добавление события в отдельную асинхронную очередь
+        {
+            std::lock_guard<std::mutex> lock(asyncQueueMutex);
+            if (asyncEventQueue.size() >= maxQueueSize) {
+                // Черга заповнена, викидаємо подію
+                // Queue is full, drop the event
+                // Очередь заполнена, выбрасываем событие
+                std::lock_guard<std::mutex> statLock(statisticsMutex);
+                statistics.totalEventsDropped++;
+                return false;
+            }
+            asyncEventQueue.push(event);
+            statistics.totalEventsPublished++;
+        }
+        
+        // 2. Сповіщення окремого асинхронного потоку обробки
+        // 2. Notifying a separate async processing thread
+        // 2. Оповещение отдельного асинхронного потока обработки
+        asyncEventCondition.notify_one();
+        
+        // 3. Повернення негайно без очікування обробки
+        // 3. Returning immediately without waiting for processing
+        // 3. Возвращение немедленно без ожидания обработки
+        return true;
     }
 
-    void EventSystem::broadcastEvent(const std::string& eventType, const std::any& eventData) {
-        // TODO: Implement proper broadcast mechanism
-        // For now, this is the same as publishEvent
-        publishEvent(eventType, eventData);
+    // TODO: Implement proper broadcast mechanism
+    // TODO: This is the same as publishEvent
+    // In a real implementation, this would broadcast an event to all subscribed neurons
+    // and handlers. This would involve:
+    // 1. Creating an event with the provided event type and data
+    // 2. Broadcasting the event to all subscribed neurons
+    // 3. Calling all registered handlers for the event type
+    // 4. Handling any errors or exceptions that occur during broadcasting
+    void EventSystem::broadcastEvent(const std::string& eventType, const std::string& eventData) {
+        // Create an event with the provided event type and data
+        // Note: In a real implementation, we would convert the string eventType to EventType enum
+        // For now, we'll use a default event type
+        Event event(eventIdCounter++, EventType::CUSTOM_EVENT, -1, -1, eventData, 0);
+        event.timestamp = getCurrentTimeMillis();
+        
+        // Broadcast the event to all subscribed neurons and handlers
+        publishEvent(event);
     }
 
     bool EventSystem::subscribe(int neuronId, EventType type) {
@@ -219,6 +272,54 @@ namespace Event {
                             } catch (...) {
                                 // Handle exceptions in handlers gracefully
                                 std::cerr << "Exception in event handler for event type: " 
+                                          << static_cast<int>(event.type) << std::endl;
+                            }
+                        }
+                    }
+                }
+                
+                // Update statistics
+                long long processingTime = getCurrentTimeMillis() - startTime;
+                updateStatistics(event, true);
+                
+                lock.lock(); // Lock again for the next iteration
+            }
+        }
+    }
+
+    void EventSystem::processAsyncEvents() {
+        while (running) {
+            std::unique_lock<std::mutex> lock(asyncQueueMutex);
+            
+            // Wait for async events or stop signal
+            asyncEventCondition.wait(lock, [this] { return !asyncEventQueue.empty() || !running; });
+            
+            if (!running && asyncEventQueue.empty()) {
+                break;
+            }
+            
+            // Process all available async events
+            while (!asyncEventQueue.empty()) {
+                Event event = asyncEventQueue.front();
+                asyncEventQueue.pop();
+                
+                lock.unlock(); // Unlock while processing to avoid deadlocks
+                
+                // Process the async event
+                long long startTime = getCurrentTimeMillis();
+                
+                // Check if there are handlers for this event type
+                {
+                    std::lock_guard<std::mutex> handlersLock(handlersMutex);
+                    auto it = handlers.find(event.type);
+                    if (it != handlers.end()) {
+                        // Call all handlers for this event type
+                        for (const auto& handler : it->second) {
+                            try {
+                                handler(event);
+                            } catch (...) {
+                                // Handle exceptions in handlers gracefully
+                                std::cerr << "Exception in async event handler for event type: " 
                                           << static_cast<int>(event.type) << std::endl;
                             }
                         }
