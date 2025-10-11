@@ -2681,18 +2681,120 @@ namespace Vision {
     // Calculate similarity between images
     // Вычислить схожесть между изображениями
     double ComputerVision::calculateSimilarity(const Image& img1, const Image& img2) {
-        // В реальній реалізації ми б обчислювали подібність між зображеннями
-        // In a real implementation, we would calculate similarity between images
-        // В реальной реализации мы бы вычисляли схожесть между изображениями
+        // Реалізація алгоритму обчислення схожості між зображеннями
+        // Implementation of algorithm for calculating similarity between images
+        // Реализация алгоритма вычисления схожести между изображениями
         
-        // Для прикладу, ми просто генеруємо випадкове значення подібності
-        // For example, we just generate a random similarity value
-        // Для примера, мы просто генерируем случайное значение схожести
-        std::random_device rd;
-        std::mt19937 gen(rd());
-        std::uniform_real_distribution<> dis(0.0, 1.0);
+        std::cout << "Calculating similarity between images" << std::endl;
         
-        return dis(gen);
+        // Перевірка наявності даних
+        // Check for data availability
+        // Проверка наличия данных
+        if (img1.pixels.empty() || img2.pixels.empty()) {
+            return 0.0;
+        }
+        
+        // Обчислення гістограм для обох зображень
+        // Calculate histograms for both images
+        // Вычисление гистограмм для обоих изображений
+        std::vector<double> hist1(256, 0.0);
+        std::vector<double> hist2(256, 0.0);
+        
+        // Обчислення гістограми для першого зображення
+        // Calculate histogram for first image
+        // Вычисление гистограммы для первого изображения
+        for (const auto& pixel : img1.pixels) {
+            int value = 0;
+            if (img1.type == ImageType::GRAYSCALE) {
+                value = pixel[0][0]; // Для відтінків сірого використовуємо перший канал / For grayscale use first channel / Для оттенков серого используем первый канал
+            } else {
+                // Для кольорових зображень обчислюємо яскравість / For color images calculate brightness / Для цветных изображений вычисляем яркость
+                value = (pixel[0][0] + pixel[0][1] + pixel[0][2]) / 3;
+            }
+            if (value >= 0 && value < 256) {
+                hist1[value] += 1.0;
+            }
+        }
+        
+        // Обчислення гістограми для другого зображення
+        // Calculate histogram for second image
+        // Вычисление гистограммы для второго изображения
+        for (const auto& pixel : img2.pixels) {
+            int value = 0;
+            if (img2.type == ImageType::GRAYSCALE) {
+                value = pixel[0][0]; // Для відтінків сірого використовуємо перший канал / For grayscale use first channel / Для оттенков серого используем первый канал
+            } else {
+                // Для кольорових зображень обчислюємо яскравість / For color images calculate brightness / Для цветных изображений вычисляем яркость
+                value = (pixel[0][0] + pixel[0][1] + pixel[0][2]) / 3;
+            }
+            if (value >= 0 && value < 256) {
+                hist2[value] += 1.0;
+            }
+        }
+        
+        // Нормалізація гістограм
+        // Normalize histograms
+        // Нормализация гистограмм
+        double total1 = 0.0, total2 = 0.0;
+        for (int i = 0; i < 256; ++i) {
+            total1 += hist1[i];
+            total2 += hist2[i];
+        }
+        
+        if (total1 > 0.0) {
+            for (int i = 0; i < 256; ++i) {
+                hist1[i] /= total1;
+            }
+        }
+        
+        if (total2 > 0.0) {
+            for (int i = 0; i < 256; ++i) {
+                hist2[i] /= total2;
+            }
+        }
+        
+        // Обчислення схожості за допомогою коефіцієнта кореляції
+        // Calculate similarity using correlation coefficient
+        // Вычисление схожести с помощью коэффициента корреляции
+        double correlation = 0.0;
+        double mean1 = 0.0, mean2 = 0.0;
+        
+        // Обчислення середніх значень
+        // Calculate mean values
+        // Вычисление средних значений
+        for (size_t i = 0; i < hist1.size(); ++i) {
+            mean1 += hist1[i];
+            mean2 += hist2[i];
+        }
+        mean1 /= hist1.size();
+        mean2 /= hist2.size();
+        
+        // Обчислення коефіцієнта кореляції
+        // Calculate correlation coefficient
+        // Вычисление коэффициента корреляции
+        double numerator = 0.0, denominator1 = 0.0, denominator2 = 0.0;
+        
+        for (size_t i = 0; i < hist1.size(); ++i) {
+            double diff1 = hist1[i] - mean1;
+            double diff2 = hist2[i] - mean2;
+            
+            numerator += diff1 * diff2;
+            denominator1 += diff1 * diff1;
+            denominator2 += diff2 * diff2;
+        }
+        
+        if (denominator1 > 0 && denominator2 > 0) {
+            correlation = numerator / std::sqrt(denominator1 * denominator2);
+        }
+        
+        // Нормалізація значення кореляції до діапазону [0, 1]
+        // Normalize correlation value to range [0, 1]
+        // Нормализация значения корреляции к диапазону [0, 1]
+        double similarity = (correlation + 1.0) / 2.0;
+        
+        std::cout << "Image similarity calculated: " << similarity << std::endl;
+        
+        return similarity;
     }
 
     // Витягти ознаки з зображення
@@ -2701,23 +2803,106 @@ namespace Vision {
     std::vector<double> ComputerVision::extractFeatures(const Image& image) {
         std::vector<double> features;
         
-        // В реальній реалізації ми б витягували ознаки з зображення
-        // In a real implementation, we would extract features from the image
-        // В реальной реализации мы бы извлекали признаки из изображения
+        // Реалізація алгоритму видобування ознак з зображення
+        // Implementation of algorithm for extracting features from image
+        // Реализация алгоритма извлечения признаков из изображения
         
-        // Для прикладу, ми просто генеруємо випадкові ознаки
-        // For example, we just generate random features
-        // Для примера, мы просто генерируем случайные признаки
-        std::random_device rd;
-        std::mt19937 gen(rd());
-        std::uniform_real_distribution<> dis(0.0, 1.0);
+        std::cout << "Extracting features from image" << std::endl;
         
-        // Генерація 10 випадкових ознак
-        // Generate 10 random features
-        // Генерация 10 случайных признаков
-        for (int i = 0; i < 10; ++i) {
-            features.push_back(dis(gen));
+        // Перевірка наявності даних
+        // Check for data availability
+        // Проверка наличия данных
+        if (image.pixels.empty()) {
+            return features;
         }
+        
+        // 1. Гістограма яскравості
+        // 1. Brightness histogram
+        // 1. Гистограмма яркости
+        std::vector<double> histogram(256, 0.0);
+        
+        // Обчислення гістограми
+        // Calculate histogram
+        // Вычисление гистограммы
+        for (const auto& pixel : image.pixels) {
+            int value = 0;
+            if (image.type == ImageType::GRAYSCALE) {
+                value = pixel[0][0]; // Для відтінків сірого використовуємо перший канал / For grayscale use first channel / Для оттенков серого используем первый канал
+            } else {
+                // Для кольорових зображень обчислюємо яскравість / For color images calculate brightness / Для цветных изображений вычисляем яркость
+                value = (pixel[0][0] + pixel[0][1] + pixel[0][2]) / 3;
+            }
+            if (value >= 0 && value < 256) {
+                histogram[value] += 1.0;
+            }
+        }
+        
+        // Нормалізація гістограми
+        // Normalize histogram
+        // Нормализация гистограммы
+        double total = 0.0;
+        for (int i = 0; i < 256; ++i) {
+            total += histogram[i];
+        }
+        
+        if (total > 0.0) {
+            for (int i = 0; i < 256; ++i) {
+                histogram[i] /= total;
+            }
+        }
+        
+        // Додавання гістограми до ознак (використовуємо лише кожен 16-й бін для зменшення розміру)
+        // Add histogram to features (use only every 16th bin to reduce size)
+        // Добавление гистограммы к признакам (используем только каждый 16-й бин для уменьшения размера)
+        for (int i = 0; i < 256; i += 16) {
+            features.push_back(histogram[i]);
+        }
+        
+        // 2. Статистики зображення
+        // 2. Image statistics
+        // 2. Статистики изображения
+        
+        // Обчислення середнього значення яскравості
+        // Calculate average brightness
+        // Вычисление среднего значения яркости
+        double meanBrightness = 0.0;
+        for (const auto& pixel : image.pixels) {
+            int value = 0;
+            if (image.type == ImageType::GRAYSCALE) {
+                value = pixel[0][0];
+            } else {
+                value = (pixel[0][0] + pixel[0][1] + pixel[0][2]) / 3;
+            }
+            meanBrightness += value;
+        }
+        meanBrightness /= image.pixels.size();
+        features.push_back(meanBrightness / 255.0); // Нормалізація / Normalization / Нормализация
+        
+        // Обчислення стандартного відхилення яскравості
+        // Calculate standard deviation of brightness
+        // Вычисление стандартного отклонения яркости
+        double variance = 0.0;
+        for (const auto& pixel : image.pixels) {
+            int value = 0;
+            if (image.type == ImageType::GRAYSCALE) {
+                value = pixel[0][0];
+            } else {
+                value = (pixel[0][0] + pixel[0][1] + pixel[0][2]) / 3;
+            }
+            double diff = value - meanBrightness;
+            variance += diff * diff;
+        }
+        variance /= image.pixels.size();
+        double stdDev = std::sqrt(variance);
+        features.push_back(stdDev / 255.0); // Нормалізація / Normalization / Нормализация
+        
+        // 3. Співвідношення сторін
+        // 3. Aspect ratio
+        // 3. Соотношение сторон
+        double aspectRatio = static_cast<double>(image.width) / image.height;
+        features.push_back(aspectRatio);
+        
+        std::cout << "Extracted " << features.size() << " features from image" << std::endl;
         
         return features;
     }
