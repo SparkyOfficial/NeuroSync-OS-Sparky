@@ -1,179 +1,235 @@
-#include "network/NeuralNetwork.h"
-#include <cassert>
+#include "../network/NetworkCommunication.h"
 #include <iostream>
+#include <cassert>
 #include <vector>
+#include <thread>
+#include <chrono>
 
-using namespace NeuroSync::Network;
+// Тести для мережевої комунікації
+// Network communication tests
+// Тесты для сетевой коммуникации
 
-void testNetworkCreation() {
-    std::cout << "Testing neural network creation..." << std::endl;
+void testNetworkInitialization() {
+    std::cout << "Testing NetworkCommunication initialization..." << std::endl;
     
-    NeuralNetwork network(NetworkType::FEEDFORWARD, "TestNetwork");
+    NeuroSync::NetworkCommunication networkComm;
     
-    // Перевірити початкові параметри
-    // Check initial parameters
-    // Проверить начальные параметры
-    assert(network.getName() == "TestNetwork");
-    assert(network.getType() == NetworkType::FEEDFORWARD);
-    assert(network.getLayerCount() == 0);
-    assert(network.getNeuronCount() == 0);
+    NeuroSync::NetworkConfig config;
+    config.host = "localhost";
+    config.port = 8080;
     
-    // Перевірити ініціалізацію
-    // Check initialization
-    // Проверить инициализацию
-    bool initResult = network.initialize();
-    assert(initResult);
+    assert(networkComm.initialize(config));
     
-    std::cout << "Network creation test passed!" << std::endl;
+    assert(networkComm.getStatus() == NeuroSync::NetworkStatus::CONNECTING);
+    assert(!networkComm.getNodeId().empty());
+    
+    std::cout << "NetworkCommunication initialization test passed!" << std::endl;
 }
 
-void testLayerManagement() {
-    std::cout << "Testing layer management..." << std::endl;
+void testNodeConnection() {
+    std::cout << "Testing node connection..." << std::endl;
     
-    NeuralNetwork network(NetworkType::FEEDFORWARD, "LayerTestNetwork");
+    NeuroSync::NetworkCommunication networkComm;
     
-    // Додати шари
-    // Add layers
-    // Добавить слои
-    bool addResult1 = network.addLayer(3, "sigmoid");
-    assert(addResult1);
-    assert(network.getLayerCount() == 1);
-    assert(network.getNeuronCount() == 3);
+    NeuroSync::NetworkConfig config;
+    config.host = "localhost";
+    config.port = 8080;
+    networkComm.initialize(config);
     
-    bool addResult2 = network.addLayer(2, "relu");
-    assert(addResult2);
-    assert(network.getLayerCount() == 2);
-    assert(network.getNeuronCount() == 5);
+    // Підключення до вузлів
+    // Connecting to nodes
+    // Подключение к узлам
+    assert(networkComm.connect("192.168.1.10", 8080));
+    assert(networkComm.connect("192.168.1.11", 8080));
     
-    // Видалити шар
-    // Remove layer
-    // Удалить слой
-    bool removeResult = network.removeLayer(1);
-    assert(removeResult);
-    assert(network.getLayerCount() == 1);
-    assert(network.getNeuronCount() == 3);
+    assert(networkComm.getConnectedNodeCount() == 2);
+    assert(networkComm.isNodeConnected("192.168.1.10:8080"));
+    assert(networkComm.isNodeConnected("192.168.1.11:8080"));
     
-    std::cout << "Layer management test passed!" << std::endl;
+    // Від'єднання від вузла
+    // Disconnecting from node
+    // Отключение от узла
+    networkComm.disconnect("192.168.1.10:8080");
+    assert(networkComm.getConnectedNodeCount() == 1);
+    assert(!networkComm.isNodeConnected("192.168.1.10:8080"));
+    
+    // Від'єднання від усіх вузлів
+    // Disconnecting from all nodes
+    // Отключение от всех узлов
+    networkComm.disconnectAll();
+    assert(networkComm.getConnectedNodeCount() == 0);
+    assert(networkComm.getStatus() == NeuroSync::NetworkStatus::DISCONNECTED);
+    
+    std::cout << "Node connection test passed!" << std::endl;
 }
 
-void testNetworkConnections() {
-    std::cout << "Testing network connections..." << std::endl;
+void testMessageSending() {
+    std::cout << "Testing message sending..." << std::endl;
     
-    NeuralNetwork network(NetworkType::FEEDFORWARD, "ConnectionTestNetwork");
+    NeuroSync::NetworkCommunication networkComm;
     
-    // Додати шари
-    // Add layers
-    // Добавить слои
-    network.addLayer(2, "sigmoid");
-    network.addLayer(3, "sigmoid");
-    network.addLayer(1, "sigmoid");
+    NeuroSync::NetworkConfig config;
+    config.host = "localhost";
+    config.port = 8080;
+    networkComm.initialize(config);
     
-    // Підключити шари
-    // Connect layers
-    // Соединить слои
-    bool connectResult1 = network.connectLayers(0, 1);
-    assert(connectResult1);
+    // Підключення до вузла
+    // Connecting to node
+    // Подключение к узлу
+    networkComm.connect("192.168.1.10", 8080);
     
-    bool connectResult2 = network.connectLayers(1, 2);
-    assert(connectResult2);
+    // Створення повідомлення
+    // Creating message
+    // Создание сообщения
+    std::vector<uint8_t> data = {0x01, 0x02, 0x03, 0x04};
+    NeuroSync::NetworkMessage message(
+        NeuroSync::MessageType::NEURON_DATA,
+        networkComm.getNodeId(),
+        "192.168.1.10:8080",
+        data
+    );
     
-    // Отримати статистику
-    // Get statistics
-    // Получить статистику
-    auto stats = network.getStatistics();
-    assert(stats.totalLayers == 3);
-    assert(stats.totalNeurons == 6);
-    assert(stats.totalConnections > 0);
+    // Надсилання повідомлення
+    // Sending message
+    // Отправка сообщения
+    assert(networkComm.sendMessage(message));
     
-    std::cout << "Network connections test passed!" << std::endl;
+    // Перевірка статистики
+    // Checking statistics
+    // Проверка статистики
+    assert(networkComm.getOutgoingMessageCount() == 1);
+    
+    std::cout << "Message sending test passed!" << std::endl;
 }
 
-void testNetworkPrediction() {
-    std::cout << "Testing network prediction..." << std::endl;
+void testMessageReceiving() {
+    std::cout << "Testing message receiving..." << std::endl;
     
-    NeuralNetwork network(NetworkType::FEEDFORWARD, "PredictionTestNetwork");
+    NeuroSync::NetworkCommunication networkComm;
     
-    // Додати шари
-    // Add layers
-    // Добавить слои
-    network.addLayer(2, "sigmoid");
-    network.addLayer(3, "sigmoid");
-    network.addLayer(1, "sigmoid");
+    NeuroSync::NetworkConfig config;
+    config.host = "localhost";
+    config.port = 8080;
+    networkComm.initialize(config);
     
-    // Підключити шари
-    // Connect layers
-    // Соединить слои
-    network.connectLayers(0, 1);
-    network.connectLayers(1, 2);
+    // Підключення до вузла
+    // Connecting to node
+    // Подключение к узлу
+    networkComm.connect("192.168.1.10", 8080);
     
-    // Зробити передбачення
-    // Make prediction
-    // Сделать предсказание
-    std::vector<double> input = {0.5, 0.3};
-    std::vector<double> output = network.predict(input);
+    // Перевірка початкової статистики
+    // Checking initial statistics
+    // Проверка начальной статистики
+    assert(networkComm.getIncomingMessageCount() == 0);
+    assert(networkComm.getOutgoingMessageCount() == 0);
     
-    // Перевірити розмір виходу
-    // Check output size
-    // Проверить размер выхода
-    assert(output.size() == 1);
-    
-    std::cout << "Network prediction test passed!" << std::endl;
+    std::cout << "Message receiving test passed!" << std::endl;
 }
 
-void testModelSaveLoad() {
-    std::cout << "Testing model save/load..." << std::endl;
+void testServerOperations() {
+    std::cout << "Testing server operations..." << std::endl;
     
-    NeuralNetwork network(NetworkType::FEEDFORWARD, "SaveLoadTestNetwork");
+    NeuroSync::NetworkCommunication networkComm;
     
-    // Додати шари
-    // Add layers
-    // Добавить слои
-    network.addLayer(2, "sigmoid");
-    network.addLayer(3, "sigmoid");
-    network.addLayer(1, "sigmoid");
+    NeuroSync::NetworkConfig config;
+    config.host = "localhost";
+    config.port = 8080;
+    networkComm.initialize(config);
     
-    // Підключити шари
-    // Connect layers
-    // Соединить слои
-    network.connectLayers(0, 1);
-    network.connectLayers(1, 2);
+    // Запуск сервера
+    // Starting server
+    // Запуск сервера
+    assert(networkComm.startServer());
     
-    // Зберегти модель
-    // Save model
-    // Сохранить модель
-    bool saveResult = network.saveModel("test_model.txt");
-    assert(saveResult);
+    // Очікування трохи часу для імітації роботи сервера
+    // Waiting a bit to simulate server operation
+    // Ожидание немного времени для имитации работы сервера
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     
-    // Створити нову мережу та завантажити модель
-    // Create new network and load model
-    // Создать новую сеть и загрузить модель
-    NeuralNetwork loadedNetwork(NetworkType::FEEDFORWARD, "LoadedNetwork");
-    bool loadResult = loadedNetwork.loadModel("test_model.txt");
-    assert(loadResult);
+    // Зупинка сервера
+    // Stopping server
+    // Остановка сервера
+    networkComm.stopServer();
     
-    // Перевірити параметри завантаженої мережі
-    // Check loaded network parameters
-    // Проверить параметры загруженной сети
-    assert(loadedNetwork.getLayerCount() == 3);
-    assert(loadedNetwork.getNeuronCount() == 6);
+    std::cout << "Server operations test passed!" << std::endl;
+}
+
+void testMessageSerialization() {
+    std::cout << "Testing message serialization..." << std::endl;
     
-    std::cout << "Model save/load test passed!" << std::endl;
+    NeuroSync::NetworkCommunication networkComm;
+    
+    // Створення повідомлення
+    // Creating message
+    // Создание сообщения
+    std::vector<uint8_t> data = {0xAA, 0xBB, 0xCC, 0xDD, 0xEE};
+    NeuroSync::NetworkMessage originalMsg(
+        NeuroSync::MessageType::SIGNAL_DATA,
+        "source_node",
+        "dest_node",
+        data
+    );
+    originalMsg.sequenceNumber = 42;
+    
+    // Перевірка, що повідомлення створено правильно
+    // Checking that message is created correctly
+    // Проверка, что сообщение создано правильно
+    assert(originalMsg.type == NeuroSync::MessageType::SIGNAL_DATA);
+    assert(originalMsg.sourceId == "source_node");
+    assert(originalMsg.destinationId == "dest_node");
+    assert(originalMsg.data.size() == 5);
+    assert(originalMsg.sequenceNumber == 42);
+    
+    std::cout << "Message serialization test passed!" << std::endl;
+}
+
+void testStatistics() {
+    std::cout << "Testing statistics..." << std::endl;
+    
+    NeuroSync::NetworkCommunication networkComm;
+    
+    NeuroSync::NetworkConfig config;
+    config.host = "localhost";
+    config.port = 8080;
+    networkComm.initialize(config);
+    
+    // Перевірка початкової статистики
+    // Checking initial statistics
+    // Проверка начальной статистики
+    assert(networkComm.getIncomingMessageCount() == 0);
+    assert(networkComm.getOutgoingMessageCount() == 0);
+    
+    // Очищення статистики
+    // Clearing statistics
+    // Очистка статистики
+    networkComm.clearStatistics();
+    
+    assert(networkComm.getIncomingMessageCount() == 0);
+    assert(networkComm.getOutgoingMessageCount() == 0);
+    
+    std::cout << "Statistics test passed!" << std::endl;
 }
 
 int main() {
-    std::cout << "=== Running Neural Network Tests ===" << std::endl;
+    std::cout << "=== Network Communication Tests ===" << std::endl;
     
     try {
-        testNetworkCreation();
-        testLayerManagement();
-        testNetworkConnections();
-        testNetworkPrediction();
-        testModelSaveLoad();
+        testNetworkInitialization();
+        testNodeConnection();
+        testMessageSending();
+        testMessageReceiving();
+        testServerOperations();
+        testMessageSerialization();
+        testStatistics();
         
-        std::cout << "\n=== All Neural Network Tests Passed! ===" << std::endl;
-        return 0;
+        std::cout << "\nAll Network Communication tests passed!" << std::endl;
     } catch (const std::exception& e) {
-        std::cerr << "Test failed with error: " << e.what() << std::endl;
+        std::cerr << "Test failed with exception: " << e.what() << std::endl;
+        return 1;
+    } catch (...) {
+        std::cerr << "Test failed with unknown exception" << std::endl;
         return 1;
     }
+    
+    return 0;
 }

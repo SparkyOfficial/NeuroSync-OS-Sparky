@@ -1,4 +1,4 @@
-#include "diagnostics/Diagnostics.h"
+#include "../diagnostics/Diagnostics.h"
 #include <iostream>
 #include <thread>
 #include <chrono>

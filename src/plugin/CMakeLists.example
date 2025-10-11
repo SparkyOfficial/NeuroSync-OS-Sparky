@@ -1,0 +1,31 @@
+# CMakeLists.txt for building example plugin
+# CMakeLists.txt для збірки прикладу плагіна
+# CMakeLists.txt для сборки примера плагина
+
+# Створення shared library для прикладу плагіна
+# Create shared library for example plugin
+# Создание shared library для примера плагина
+add_library(example_plugin SHARED
+    ExamplePlugin.cpp
+)
+
+# Встановлення властивостей бібліотеки
+# Setting library properties
+# Установка свойств библиотеки
+set_target_properties(example_plugin PROPERTIES
+    CXX_STANDARD 14
+    CXX_STANDARD_REQUIRED ON
+)
+
+# Встановлення заголовочних файлів
+# Setting header files
+# Установка заголовочных файлов
+target_include_directories(example_plugin PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}/src/plugin
+)
+
+# Лінкування з основною бібліотекою плагінів
+# Linking with main plugin library
+# Линковка с основной библиотекой плагинов
+target_link_libraries(example_plugin plugin)

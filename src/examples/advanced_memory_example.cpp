@@ -1,4 +1,4 @@
-#include "memory/MemoryCore.h"
+#include "../memory/MemoryCore.h"
 #include <iostream>
 #include <vector>
 #include <thread>

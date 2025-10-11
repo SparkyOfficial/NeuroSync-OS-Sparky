@@ -224,7 +224,10 @@ namespace Diagnostics {
     // Format timestamp
     // Форматувати часову мітку
     std::string Visualizer::formatTimestamp(const std::chrono::high_resolution_clock::time_point& tp) const {
-        auto time = std::chrono::high_resolution_clock::to_time_t(tp);
+        // Convert to system_clock time_point
+        auto system_tp = std::chrono::time_point_cast<std::chrono::system_clock::duration>(
+            tp - std::chrono::high_resolution_clock::now() + std::chrono::system_clock::now());
+        auto time = std::chrono::system_clock::to_time_t(system_tp);
         std::ostringstream oss;
         oss << std::put_time(std::localtime(&time), "%Y-%m-%d %H:%M:%S");
         return oss.str();

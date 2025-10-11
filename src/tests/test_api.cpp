@@ -1,4 +1,4 @@
-#include "api/NeuroAPI.h"
+#include "../api/NeuroAPI.h"
 #include <cassert>
 #include <iostream>
 #include <cstring>

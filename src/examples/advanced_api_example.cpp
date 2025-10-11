@@ -1,4 +1,4 @@
-#include "api/NeuroAPI.h"
+#include "../api/NeuroAPI.h"
 #include <iostream>
 #include <thread>
 #include <chrono>

@@ -1,5 +1,6 @@
 # NeuroSync OS Sparky .gitignore
 # Build directories
+test_build/
 build/
 _build/
 bin/

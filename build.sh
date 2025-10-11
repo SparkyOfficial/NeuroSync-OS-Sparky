@@ -21,7 +21,19 @@ make -j$(nproc)
 echo "=== Build completed successfully! ==="
 
 echo "=== Running tests ==="
-./bin/test_neurosync
-./bin/advanced_memory_example
+# The tests are now in the root of the build directory
+if [ -f "./test_api" ]; then
+    echo "Running API tests..."
+    ./test_api
+else
+    echo "API test executable not found"
+fi
+
+if [ -f "./memory_example" ]; then
+    echo "Running memory example..."
+    ./memory_example
+else
+    echo "Memory example executable not found"
+fi
 
 echo "=== All tests completed ==="

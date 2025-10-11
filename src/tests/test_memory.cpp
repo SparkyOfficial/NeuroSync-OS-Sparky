@@ -1,4 +1,4 @@
-#include "memory/MemoryCore.h"
+#include "../memory/MemoryCore.h"
 #include <cassert>
 #include <iostream>
 #include <vector>

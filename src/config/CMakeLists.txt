@@ -1,0 +1,26 @@
+# src/config/CMakeLists.txt
+# Система збірки для модуля конфігурації NeuroSync OS Sparky
+# Build system for NeuroSync OS Sparky configuration module
+# Система збірки для модуля конфигурации NeuroSync OS Sparky
+
+# Створення бібліотеки для модуля конфігурації
+# Creating library for configuration module
+# Создание библиотеки для модуля конфигурации
+add_library(config
+    ConfigurationManager.cpp
+)
+
+# Встановлення властивостей бібліотеки
+# Setting library properties
+# Установка свойств библиотеки
+set_target_properties(config PROPERTIES
+    CXX_STANDARD 14
+    CXX_STANDARD_REQUIRED ON
+)
+
+# Встановлення заголовочних файлів для інших модулів
+# Setting header files for other modules
+# Установка заголовочных файлов для других модулей
+target_include_directories(config PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)

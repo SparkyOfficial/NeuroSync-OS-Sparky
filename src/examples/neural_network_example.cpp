@@ -1,4 +1,4 @@
-#include "network/NeuralNetwork.h"
+#include "../network_neural/NeuralNetwork.h"
 #include <iostream>
 #include <vector>
 #include <random>

@@ -20,7 +20,19 @@ cmake --build . --config Release
 echo === Build completed successfully! ===
 
 echo === Running tests ===
-bin\Release\test_neurosync.exe
-bin\Release\advanced_memory_example.exe
+REM The tests are now in the Release directory, not bin\Release
+if exist "Release\test_api.exe" (
+    echo Running API tests...
+    Release\test_api.exe
+) else (
+    echo API test executable not found
+)
+
+if exist "Release\memory_example.exe" (
+    echo Running memory example...
+    Release\memory_example.exe
+) else (
+    echo Memory example executable not found
+)
 
 echo === All tests completed ===
