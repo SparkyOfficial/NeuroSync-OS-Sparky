@@ -58,6 +58,7 @@ add_subdirectory(src/quantum)
 add_subdirectory(src/database)
 add_subdirectory(src/advanced_analytics)
 add_subdirectory(src/robotics)
+add_subdirectory(src/db)
 
 # Examples
 # Приклади
@@ -245,5 +246,5 @@ add_test(NAME test_robotics COMMAND test_robotics)
 # Installation
 # Встановлення
 # Установка
-install(TARGETS neuron synapse api core memory diagnostics plugin logging threadpool filesystem network security visualization event config neural_network advanced_nn database advanced_analytics robotics
+install(TARGETS neuron synapse api core memory diagnostics plugin logging threadpool filesystem network security visualization event config neural_network advanced_nn database advanced_analytics robotics db
         DESTINATION lib)
