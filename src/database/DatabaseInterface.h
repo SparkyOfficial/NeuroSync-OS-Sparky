@@ -32,11 +32,12 @@ namespace Database {
     struct QueryResult {
         std::vector<std::map<std::string, std::any>> rows;  // Рядки результату / Result rows / Строки результата
         size_t rowCount;                                   // Кількість рядків / Row count / Количество строк
+        size_t affectedRows;                              // Кількість змінених рядків / Affected rows / Количество измененных строк
         std::vector<std::string> columnNames;              // Назви стовпців / Column names / Названия столбцов
         bool success;                                     // Успіх операції / Operation success / Успех операции
         std::string errorMessage;                         // Повідомлення про помилку / Error message / Сообщение об ошибке
         
-        QueryResult() : rowCount(0), success(true) {}
+        QueryResult() : rowCount(0), affectedRows(0), success(true) {}
     };
 
     // Конфігурація бази даних
