@@ -177,60 +177,90 @@ namespace Event {
     // 4. Обробка будь-яких помилок або винятків, що виникають під час трансляції
     // 4. Handling any errors or exceptions that occur during broadcasting
     // 4. Обработка любых ошибок или исключений, возникающих во время трансляции
+    
+    // Реалізація фактичного механізму трансляції з використанням системи повідомлень
+    // Implementation of actual broadcast mechanism using messaging system
+    // Реализация фактического механизма трансляции с использованием системы сообщений
     void EventSystem::broadcastEvent(const std::string& eventType, const std::string& eventData) {
-        // Створення події з наданим типом події та даними
-        // Create an event with the provided event type and data
-        // Создание события с предоставленным типом события и данными
+        // 1. Створення події з наданим типом події та даними
+        // 1. Creating an event with the provided event type and data
+        // 1. Создание события с предоставленным типом события и данными
         
-        // Примітка: В реальній реалізації ми б перетворили рядок eventType на перелік EventType
-        // Note: In a real implementation, we would convert the string eventType to EventType enum
-        // Примечание: В реальной реализации мы бы преобразовали строку eventType в перечисление EventType
-        // Для зараз ми використовуємо тип події за замовчуванням
-        // For now, we'll use a default event type
-        // Для сейчас мы используєм тип события по умолчанию
-        Event event(eventIdCounter++, EventType::CUSTOM_EVENT, -1, -1, eventData, 0);
+        // Конвертація рядка типу події в перелік EventType
+        // Convert string event type to EventType enum
+        // Конвертация строки типа события в перечисление EventType
+        EventType eventTypeEnum = EventType::CUSTOM_EVENT;
+        if (eventType == "NEURON_ACTIVATION") {
+            eventTypeEnum = EventType::NEURON_ACTIVATION;
+        } else if (eventType == "NEURON_DEACTIVATION") {
+            eventTypeEnum = EventType::NEURON_DEACTIVATION;
+        } else if (eventType == "SIGNAL_TRANSMISSION") {
+            eventTypeEnum = EventType::SIGNAL_TRANSMISSION;
+        } else if (eventType == "CONNECTION_ESTABLISHED") {
+            eventTypeEnum = EventType::CONNECTION_ESTABLISHED;
+        } else if (eventType == "CONNECTION_BROKEN") {
+            eventTypeEnum = EventType::CONNECTION_BROKEN;
+        } else if (eventType == "LEARNING_EVENT") {
+            eventTypeEnum = EventType::LEARNING_EVENT;
+        } else if (eventType == "SYSTEM_ERROR") {
+            eventTypeEnum = EventType::SYSTEM_ERROR;
+        }
+        
+        Event event(eventIdCounter++, eventTypeEnum, -1, -1, eventData, 0);
         event.timestamp = getCurrentTimeMillis();
         
-        // Трансляція події всім підписаним нейронам і обробникам
-        // Broadcast the event to all subscribed neurons and handlers
-        // Трансляция события всем подписанным нейронам и обработчикам
+        // 2. Трансляція події всім підписаним нейронам
+        // 2. Broadcasting the event to all subscribed neurons
+        // 2. Трансляция события всем подписанным нейронам
         
-        // Отримання списку всіх підписаних нейронів
-        // Get list of all subscribed neurons
-        // Получение списка всех подписанных нейронов
+        // Отримання списку всіх підписаних нейронів для конкретного типу події
+        // Get list of all subscribed neurons for the specific event type
+        // Получение списка всех подписанных нейронов для конкретного типа события
         std::lock_guard<std::mutex> lock(subscriptionsMutex);
         std::vector<int> subscribedNeurons;
         
-        // Збір всіх нейронів, які підписані на будь-який тип події
-        // Collect all neurons subscribed to any event type
-        // Сбор всех нейронов, подписанных на любой тип события
+        // Збір всіх нейронів, які підписані на цей тип події
+        // Collect all neurons subscribed to this event type
+        // Сбор всех нейронов, подписанных на этот тип события
         for (const auto& subscription : subscriptions) {
-            subscribedNeurons.push_back(subscription.first);
+            int neuronId = subscription.first;
+            const auto& neuronSubscriptions = subscription.second;
+            
+            // Перевірка чи нейрон підписаний на цей тип події
+            // Check if neuron is subscribed to this event type
+            // Проверка подписан ли нейрон на этот тип события
+            if (std::find(neuronSubscriptions.begin(), neuronSubscriptions.end(), eventTypeEnum) != neuronSubscriptions.end()) {
+                subscribedNeurons.push_back(neuronId);
+            }
         }
         
         // Розблокування м'ютекса перед обробкою подій, щоб уникнути взаємних блокувань
         // Unlock mutex before processing events to avoid deadlocks
-        // Разблокировка мьютекса перед обработкой событий, чтобы избежать взаимных блокировок
+        // Разблокировка мьютекса перед обработкой событий, чтобы избежать взаємных блокировок
         
         // Трансляція події всім підписаним нейронам
         // Broadcast event to all subscribed neurons
         // Трансляция события всем подписанным нейронам
+        size_t broadcastCount = 0;
         for (int neuronId : subscribedNeurons) {
             // Створення спеціальної події для кожного нейрона
             // Create a special event for each neuron
             // Создание специального события для каждого нейрона
             Event neuronEvent = event;
             neuronEvent.targetId = neuronId;
+            neuronEvent.sourceId = -1; // Системне джерело / System source / Системный источник
             
             // Публікація події для кожного нейрона
             // Publish event for each neuron
             // Публикация события для каждого нейрона
-            publishEvent(neuronEvent);
+            if (publishEvent(neuronEvent)) {
+                broadcastCount++;
+            }
         }
         
-        // Виклик всіх зареєстрованих обробників для типу події
-        // Call all registered handlers for the event type
-        // Вызов всех зарегистрированных обработчиков для типа события
+        // 3. Виклик всіх зареєстрованих обробників для типу події
+        // 3. Calling all registered handlers for the event type
+        // 3. Вызов всех зарегистрированных обработчиков для типа события
         {
             std::lock_guard<std::mutex> handlersLock(handlersMutex);
             auto it = handlers.find(event.type);
@@ -241,6 +271,7 @@ namespace Event {
                 for (const auto& handler : it->second) {
                     try {
                         handler(event);
+                        broadcastCount++;
                     } catch (const std::exception& e) {
                         // Обробка винятків в обробниках з грацією
                         // Handle exceptions in handlers gracefully
@@ -258,6 +289,16 @@ namespace Event {
                 }
             }
         }
+        
+        // 4. Обробка будь-яких помилок або винятків, що виникають під час трансляції
+        // 4. Handling any errors or exceptions that occur during broadcasting
+        // 4. Обработка любых ошибок или исключений, возникающих во время трансляции
+        
+        // Логування результатів трансляції
+        // Log broadcast results
+        // Логирование результатов трансляции
+        std::cout << "[EVENT] Broadcasted event type '" << eventType 
+                  << "' to " << broadcastCount << " subscribers" << std::endl;
     }
 
     bool EventSystem::subscribe(int neuronId, EventType type) {

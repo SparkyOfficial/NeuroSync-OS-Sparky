@@ -207,7 +207,7 @@ namespace Database {
     protected:
         DatabaseConfig configuration;                    // Конфігурація / Configuration / Конфигурация
         mutable std::map<std::string, Transaction> transactions; // Транзакції / Transactions / Транзакции
-        mutable std::map<std::string, void*> preparedStatements; // Підготовлені запити / Prepared statements / Подготовленные запросы
+        mutable std::map<std::string, std::string> preparedStatements; // Підготовлені запити / Prepared statements / Подготовленные запросы
         mutable DatabaseStatistics statistics;          // Статистика / Statistics / Статистика
         bool connected;                                // Стан з'єднання / Connection state / Состояние соединения
         

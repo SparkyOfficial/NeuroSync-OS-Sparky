@@ -47,18 +47,21 @@ void testThreadPoolWithNeurons() {
             // 1. Отримання нейрона з менеджера нейронів
             // 1. Retrieving the neuron from the neuron manager
             // 1. Получение нейрона из менеджера нейронов
-            // Note: In a real implementation, we would retrieve and update the neuron
-            // but for this test, we'll simulate the process
-            
-            // 2. Оновлення стану або параметрів нейрона
-            // 2. Updating the neuron's state or parameters
-            // 2. Обновление состояния или параметров нейрона
-            std::this_thread::sleep_for(std::chrono::milliseconds(5));
-            
-            // 3. Обробка будь-яких помилок або винятків, що виникають під час оновлення
-            // 3. Handling any errors or exceptions that occur during the update
-            // 3. Обработка любых ошибок или исключений, возникающих во время обновления
-            std::cout << "[TEST] Updated neuron with ID: " << id << std::endl;
+            auto neuron = neuronManager.getNeuron(id);
+            if (neuron) {
+                // 2. Оновлення стану або параметрів нейрона
+                // 2. Updating the neuron's state or parameters
+                // 2. Обновление состояния или параметров нейрона
+                neuron->setActivationPotential(neuron->getActivationPotential() + 0.1);
+                neuron->setRecoveryRate(neuron->getRecoveryRate() + 0.01);
+                
+                // 3. Обробка будь-яких помилок або винятків, що виникають під час оновлення
+                // 3. Handling any errors or exceptions that occur during the update
+                // 3. Обработка любых ошибок или исключений, возникающих во время обновления
+                std::cout << "[TEST] Updated neuron with ID: " << id << std::endl;
+            } else {
+                std::cerr << "[TEST] Failed to retrieve neuron with ID: " << id << std::endl;
+            }
         });
         updateFutures.push_back(std::move(future));
     }

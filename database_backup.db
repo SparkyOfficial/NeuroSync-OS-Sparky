@@ -1,0 +1,20 @@
+NeuroSync Database Backup
+========================
+Backup created: 1760265755953
+Database type: 0
+Host: localhost
+Port: 5432
+Database name: neurosync_db
+
+Statistics:
+Total queries: 5
+Successful queries: 5
+Failed queries: 0
+Active connections: 1
+Total transactions: 1
+
+Transactions:
+ID: TXN806596
+  Start time: 1760265755495
+  Committed: true
+  Rolled back: false

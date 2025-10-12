@@ -305,26 +305,99 @@ namespace NLP {
         // In a real implementation, we would use a neural network for POS tagging
         // В реальной реализации мы бы использовали нейронную сеть для определения частей речи
         
-        // Для прикладу, ми просто встановлюємо випадкові теги частин мови
-        // For example, we just set random POS tags
-        // Для примера, мы просто устанавливаем случайные теги частей речи
+        // Реалізація фактичного визначення частин мови з використанням правил та словників
+        // Implementation of actual POS tagging using rules and dictionaries
+        // Реализация фактического определения частей речи с использованием правил и словарей
         std::cout << "[NLP] POS tagging " << tokens.size() << " tokens" << std::endl;
         
-        // Симуляція процесу визначення частин мови
-        // Simulate POS tagging process
-        // Симуляция процесса определения частей речи
-        std::this_thread::sleep_for(std::chrono::milliseconds(4));
+        // Словники для визначення частин мови
+        // Dictionaries for POS determination
+        // Словари для определения частей речи
+        std::map<std::string, std::string> nounDict = {
+            {"cat", "NOUN"}, {"dog", "NOUN"}, {"house", "NOUN"}, {"car", "NOUN"},
+            {"person", "NOUN"}, {"book", "NOUN"}, {"computer", "NOUN"}, {"table", "NOUN"}
+        };
         
-        // Встановлення тегів частин мови
-        // Set POS tags
-        // Установка тегов частей речи
-        std::vector<std::string> posTags = {"NOUN", "VERB", "ADJ", "ADV", "PRON", "PREP", "CONJ", "DET", "NUM", "INTJ"};
-        std::random_device rd;
-        std::mt19937 gen(rd());
-        std::uniform_int_distribution<> dis(0, posTags.size() - 1);
+        std::map<std::string, std::string> verbDict = {
+            {"run", "VERB"}, {"walk", "VERB"}, {"eat", "VERB"}, {"sleep", "VERB"},
+            {"think", "VERB"}, {"work", "VERB"}, {"play", "VERB"}, {"read", "VERB"}
+        };
         
+        std::map<std::string, std::string> adjDict = {
+            {"big", "ADJ"}, {"small", "ADJ"}, {"good", "ADJ"}, {"bad", "ADJ"},
+            {"fast", "ADJ"}, {"slow", "ADJ"}, {"happy", "ADJ"}, {"sad", "ADJ"}
+        };
+        
+        std::map<std::string, std::string> advDict = {
+            {"quickly", "ADV"}, {"slowly", "ADV"}, {"carefully", "ADV"}, {"loudly", "ADV"},
+            {"quietly", "ADV"}, {"easily", "ADV"}, {"carefully", "ADV"}, {"smoothly", "ADV"}
+        };
+        
+        // Правила для визначення частин мови на основі закінчень
+        // Rules for determining POS based on endings
+        // Правила для определения частей речи на основе окончаний
+        auto determinePOSByEnding = [](const std::string& word) -> std::string {
+            std::string lowerWord = word;
+            std::transform(lowerWord.begin(), lowerWord.end(), lowerWord.begin(), ::tolower);
+            
+            // Закінчення для прикметників
+            // Endings for adjectives
+            // Окончания для прилагательных
+            if (lowerWord.length() > 2 && 
+                (lowerWord.substr(lowerWord.length() - 2) == "ly" || 
+                 lowerWord.substr(lowerWord.length() - 3) == "ily")) {
+                return "ADV";
+            }
+            
+            // Закінчення для дієслів
+            // Endings for verbs
+            // Окончания для глаголов
+            if (lowerWord.length() > 3 && 
+                (lowerWord.substr(lowerWord.length() - 3) == "ing" || 
+                 lowerWord.substr(lowerWord.length() - 2) == "ed" ||
+                 lowerWord.substr(lowerWord.length() - 1) == "s")) {
+                return "VERB";
+            }
+            
+            // Закінчення для іменників
+            // Endings for nouns
+            // Окончания для существительных
+            if (lowerWord.length() > 1 && 
+                (lowerWord.substr(lowerWord.length() - 1) == "s" ||
+                 lowerWord.substr(lowerWord.length() - 2) == "es")) {
+                return "NOUN";
+            }
+            
+            return "UNKNOWN";
+        };
+        
+        // Визначення частин мови для кожного токена
+        // Determine POS for each token
+        // Определение частей речи для каждого токена
         for (auto& token : taggedTokens) {
-            token.pos = posTags[dis(gen)];
+            std::string lowerText = token.text;
+            std::transform(lowerText.begin(), lowerText.end(), lowerText.begin(), ::tolower);
+            
+            // Пошук у словниках
+            // Search in dictionaries
+            // Поиск в словарях
+            if (nounDict.find(lowerText) != nounDict.end()) {
+                token.pos = "NOUN";
+            } else if (verbDict.find(lowerText) != verbDict.end()) {
+                token.pos = "VERB";
+            } else if (adjDict.find(lowerText) != adjDict.end()) {
+                token.pos = "ADJ";
+            } else if (advDict.find(lowerText) != advDict.end()) {
+                token.pos = "ADV";
+            } else {
+                // Визначення за закінченням
+                // Determine by ending
+                // Определение по окончанию
+                token.pos = determinePOSByEnding(token.text);
+                if (token.pos == "UNKNOWN") {
+                    token.pos = "NOUN"; // За замовчуванням / By default / По умолчанию
+                }
+            }
         }
         
         auto endTime = getCurrentTimeMillis();
@@ -362,26 +435,91 @@ namespace NLP {
         // In a real implementation, we would use a neural network for NER tagging
         // В реальной реализации мы бы использовали нейронную сеть для определения именованных сущностей
         
-        // Для прикладу, ми просто встановлюємо випадкові теги іменованих сутностей
-        // For example, we just set random NER tags
-        // Для примера, мы просто устанавливаем случайные теги именованных сущностей
+        // Реалізація фактичного визначення іменованих сутностей з використанням словників
+        // Implementation of actual NER tagging using dictionaries
+        // Реализация фактического определения именованных сущностей с использованием словарей
         std::cout << "[NLP] NER tagging " << tokens.size() << " tokens" << std::endl;
         
-        // Симуляція процесу визначення іменованих сутностей
-        // Simulate NER tagging process
-        // Симуляция процесса определения именованных сущностей
-        std::this_thread::sleep_for(std::chrono::milliseconds(5));
+        // Словники для визначення іменованих сутностей
+        // Dictionaries for NER determination
+        // Словари для определения именованных сущностей
+        std::map<std::string, std::string> personDict = {
+            {"john", "PERSON"}, {"mary", "PERSON"}, {"bob", "PERSON"}, {"alice", "PERSON"},
+            {"michael", "PERSON"}, {"sarah", "PERSON"}, {"david", "PERSON"}, {"lisa", "PERSON"}
+        };
         
-        // Встановлення тегів іменованих сутностей
-        // Set NER tags
-        // Установка тегов именованных сущностей
-        std::vector<std::string> nerTags = {"PERSON", "ORG", "LOC", "MISC", "DATE", "TIME", "PERCENT", "MONEY", "O"};
-        std::random_device rd;
-        std::mt19937 gen(rd());
-        std::uniform_int_distribution<> dis(0, nerTags.size() - 1);
+        std::map<std::string, std::string> orgDict = {
+            {"google", "ORG"}, {"microsoft", "ORG"}, {"apple", "ORG"}, {"amazon", "ORG"},
+            {"facebook", "ORG"}, {"twitter", "ORG"}, {"netflix", "ORG"}, {"ibm", "ORG"}
+        };
         
+        std::map<std::string, std::string> locDict = {
+            {"london", "LOC"}, {"paris", "LOC"}, {"tokyo", "LOC"}, {"new york", "LOC"},
+            {"berlin", "LOC"}, {"moscow", "LOC"}, {"kyiv", "LOC"}, {"washington", "LOC"}
+        };
+        
+        std::map<std::string, std::string> dateDict = {
+            {"january", "DATE"}, {"february", "DATE"}, {"march", "DATE"}, {"april", "DATE"},
+            {"may", "DATE"}, {"june", "DATE"}, {"july", "DATE"}, {"august", "DATE"},
+            {"september", "DATE"}, {"october", "DATE"}, {"november", "DATE"}, {"december", "DATE"}
+        };
+        
+        // Правила для визначення іменованих сутностей
+        // Rules for determining named entities
+        // Правила для определения именованных сущностей
+        auto determineNERByPattern = [](const std::string& word) -> std::string {
+            std::string lowerWord = word;
+            std::transform(lowerWord.begin(), lowerWord.end(), lowerWord.begin(), ::tolower);
+            
+            // Правила для чисел
+            // Rules for numbers
+            // Правила для чисел
+            if (std::all_of(lowerWord.begin(), lowerWord.end(), ::isdigit)) {
+                return "NUM";
+            }
+            
+            // Правила для відсотків
+            // Rules for percentages
+            // Правила для процентов
+            if (lowerWord.length() > 1 && lowerWord.back() == '%') {
+                return "PERCENT";
+            }
+            
+            // Правила для валют
+            // Rules for currency
+            // Правила для валют
+            if (lowerWord.length() > 1 && 
+                (lowerWord[0] == '$' || lowerWord[0] == '€' || lowerWord[0] == '£')) {
+                return "MONEY";
+            }
+            
+            return "O"; // За замовчуванням / By default / По умолчанию
+        };
+        
+        // Визначення іменованих сутностей для кожного токена
+        // Determine NER for each token
+        // Определение именованных сущностей для каждого токена
         for (auto& token : nerTokens) {
-            token.nerTag = nerTags[dis(gen)];
+            std::string lowerText = token.text;
+            std::transform(lowerText.begin(), lowerText.end(), lowerText.begin(), ::tolower);
+            
+            // Пошук у словниках
+            // Search in dictionaries
+            // Поиск в словарях
+            if (personDict.find(lowerText) != personDict.end()) {
+                token.nerTag = "PERSON";
+            } else if (orgDict.find(lowerText) != orgDict.end()) {
+                token.nerTag = "ORG";
+            } else if (locDict.find(lowerText) != locDict.end()) {
+                token.nerTag = "LOC";
+            } else if (dateDict.find(lowerText) != dateDict.end()) {
+                token.nerTag = "DATE";
+            } else {
+                // Визначення за шаблоном
+                // Determine by pattern
+                // Определение по шаблону
+                token.nerTag = determineNERByPattern(token.text);
+            }
         }
         
         auto endTime = getCurrentTimeMillis();
@@ -417,27 +555,64 @@ namespace NLP {
         // In a real implementation, we would use a neural network for sentiment analysis
         // В реальной реализации мы бы использовали нейронную сеть для анализа настроения
         
-        // Для прикладу, ми просто генеруємо випадковий настрій
-        // For example, we just generate a random sentiment
-        // Для примера, мы просто генерируем случайное настроение
+        // Реалізація фактичного аналізу настрою з використанням словників позитивних та негативних слів
+        // Implementation of actual sentiment analysis using positive and negative word dictionaries
+        // Реализация фактического анализа настроения с использованием словарей положительных и отрицательных слов
         std::cout << "[NLP] Analyzing sentiment of text" << std::endl;
         
-        // Симуляція процесу аналізу настрою
-        // Simulate sentiment analysis process
-        // Симуляция процесса анализа настроения
-        std::this_thread::sleep_for(std::chrono::milliseconds(6));
+        // Словники для аналізу настрою
+        // Dictionaries for sentiment analysis
+        // Словари для анализа настроения
+        std::set<std::string> positiveWords = {
+            "good", "great", "excellent", "amazing", "wonderful", "fantastic", "brilliant", "outstanding",
+            "perfect", "awesome", "superb", "marvelous", "terrific", "fabulous", "incredible", "splendid",
+            "delightful", "pleasant", "enjoyable", "satisfactory", "favorable", "positive", "happy", "joyful"
+        };
         
-        // Генерація випадкового настрою
-        // Generate random sentiment
-        // Генерация случайного настроения
-        std::random_device rd;
-        std::mt19937 gen(rd());
-        std::uniform_int_distribution<> labelDis(0, 2);
-        std::uniform_real_distribution<> scoreDis(0.0, 1.0);
+        std::set<std::string> negativeWords = {
+            "bad", "terrible", "awful", "horrible", "dreadful", "abysmal", "atrocious", "appalling",
+            "disgusting", "repulsive", "nauseating", "vile", "ghastly", "gruesome", "hideous", "obnoxious",
+            "detestable", "loathsome", "repugnant", "revolting", "sickening", "unpleasant", "negative", "sad", "angry"
+        };
         
-        std::vector<std::string> sentiments = {"POSITIVE", "NEGATIVE", "NEUTRAL"};
-        std::string sentimentLabel = sentiments[labelDis(gen)];
-        double sentimentScore = scoreDis(gen);
+        // Токенізація тексту
+        // Tokenize text
+        // Токенизация текста
+        auto tokens = tokenize(text);
+        
+        // Аналіз настрою
+        // Sentiment analysis
+        // Анализ настроения
+        int positiveCount = 0;
+        int negativeCount = 0;
+        
+        for (const auto& token : tokens) {
+            std::string lowerText = token.text;
+            std::transform(lowerText.begin(), lowerText.end(), lowerText.begin(), ::tolower);
+            
+            if (positiveWords.find(lowerText) != positiveWords.end()) {
+                positiveCount++;
+            } else if (negativeWords.find(lowerText) != negativeWords.end()) {
+                negativeCount++;
+            }
+        }
+        
+        // Визначення настрою
+        // Determine sentiment
+        // Определение настроения
+        std::string sentimentLabel;
+        double sentimentScore;
+        
+        if (positiveCount > negativeCount) {
+            sentimentLabel = "POSITIVE";
+            sentimentScore = static_cast<double>(positiveCount) / (positiveCount + negativeCount + 1);
+        } else if (negativeCount > positiveCount) {
+            sentimentLabel = "NEGATIVE";
+            sentimentScore = static_cast<double>(negativeCount) / (positiveCount + negativeCount + 1);
+        } else {
+            sentimentLabel = "NEUTRAL";
+            sentimentScore = 0.5;
+        }
         
         auto endTime = getCurrentTimeMillis();
         long long processingTime = endTime - startTime;

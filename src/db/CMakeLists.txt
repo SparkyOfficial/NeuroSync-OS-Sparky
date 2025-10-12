@@ -48,3 +48,22 @@ install(FILES
     DatabaseInterface.h
     DESTINATION include/db
 )
+
+# Додавання тесту
+# Add test
+# Добавление теста
+if(BUILD_TESTS)
+    add_executable(test_db
+        test_db.cpp
+    )
+    
+    target_link_libraries(test_db
+        db
+        neuron
+        network_neural
+    )
+    
+    install(TARGETS test_db
+        RUNTIME DESTINATION bin
+    )
+endif()

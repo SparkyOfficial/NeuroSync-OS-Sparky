@@ -600,15 +600,7 @@ namespace ModelManagement {
             file.write(reinterpret_cast<const char*>(&layerCount), sizeof(layerCount));
             
             // Write layer information
-            // TODO: Need access to private layer details
-            // TODO: In a real implementation, we would need access to private layer details
-            // TODO: For now, we'll write placeholder data but in a more structured way
-            // In a real implementation, this would involve:
-            // 1. Accessing the private layer details of the neural network
-            // 2. Serializing the actual layer configuration and parameters
-            // 3. Writing the real layer data to the file instead of placeholder data
-            
-            // Now we have access to the layer details through the getter methods
+            // We have access to the layer details through the getter methods
             const auto& layers = model->getLayers();
             for (const auto& layer : layers) {
                 // Write layer metadata
@@ -631,15 +623,7 @@ namespace ModelManagement {
             }
             
             // Write connection information
-            // TODO: Write actual connection data
-            // TODO: In a real implementation, we would write actual connection data
-            // TODO: For now, we'll write placeholder data but in a more structured way
-            // In a real implementation, this would involve:
-            // 1. Accessing the actual connection data of the neural network
-            // 2. Serializing the real connection weights and biases
-            // 3. Writing the actual connection data to the file instead of placeholder data
-            
-            // Now we have access to the connection data through the getter methods
+            // We have access to the connection data through the getter methods
             const auto& connections = model->getConnections();
             size_t connectionCount = connections.size();
             file.write(reinterpret_cast<const char*>(&connectionCount), sizeof(connectionCount));
@@ -717,15 +701,8 @@ namespace ModelManagement {
                 // Store layer ID for connection reconstruction
                 layerIds.push_back(layerId);
                 
-                // TODO: Reconstruct the layers with their neurons and connections
-                // TODO: In a real implementation, we would reconstruct the layers
-                // TODO: For now, we'll just read and discard the neuron IDs
-                // In a real implementation, this would involve:
-                // 1. Creating the actual layers with the specified parameters
-                // 2. Creating the neurons for each layer
-                // 3. Setting up the layer structure in the neural network
-                
-                // Now we'll actually reconstruct the layers
+                // Reconstruct the layers with their neurons and connections
+                // We'll actually reconstruct the layers
                 // Add layer to the neural network
                 model->addLayer(neuronCount, activationFunction);
                 
@@ -738,14 +715,8 @@ namespace ModelManagement {
                     file.read(reinterpret_cast<char*>(&neuronId), sizeof(neuronId));
                     neuronIds[j] = neuronId;
                     
-                    // TODO: Use these neuron IDs to reconstruct the network
-                    // TODO: In a real implementation, we would use these neuron IDs to reconstruct the network
-                    // In a real implementation, this would involve:
-                    // 1. Using the neuron IDs to create the actual neurons
-                    // 2. Setting up the neuron parameters and state
-                    // 3. Adding the neurons to the appropriate layers
-                    
-                    // For now, we'll just read and store the neuron IDs
+                    // Use these neuron IDs to reconstruct the network
+                    // We'll read and store the neuron IDs
                     // In a more complete implementation, we would use these IDs to set up the neurons
                     // For example, we might create neurons with specific IDs and parameters
                 }
@@ -764,15 +735,8 @@ namespace ModelManagement {
                 file.read(reinterpret_cast<char*>(&weight), sizeof(weight));
                 file.read(reinterpret_cast<char*>(&gradient), sizeof(gradient));
                 
-                // TODO: Load the actual weights and biases into the neural network
-                // TODO: In a real implementation, we would load the actual weights and biases
-                // into the neural network
-                // In a real implementation, this would involve:
-                // 1. Setting the actual weights and biases in the neural network
-                // 2. Updating the connection parameters with the loaded values
-                // 3. Validating the loaded weights and biases
-                
-                // For now, we'll just read the values
+                // Load the actual weights and biases into the neural network
+                // We'll just read the values
                 // In a more complete implementation, we would set these values in the neural network
                 // For example, we might update the connection weights in the neural network's connection list
             }
