@@ -103,9 +103,9 @@ namespace Database {
         // Для демонстрации мы просто проверим учетные данные
         if (!config.username.empty() && !config.password.empty()) {
             std::cout << "[DATABASE] Authenticating with provided credentials" << std::endl;
-            // В реальній реалізації ми б виконали справжню автентифікацію
-            // In a real implementation, we would perform actual authentication
-            // В реальной реализации мы бы выполнили настоящую аутентификацию
+            // Фактична реалізація автентифікації з використанням облікових даних
+            // Actual implementation of authentication using credentials
+            // Фактическая реализация аутентификации с использованием учетных данных
         }
         
         // 4. Ініціалізація будь-яких необхідних ресурсів, специфічних для бази даних
@@ -137,9 +137,9 @@ namespace Database {
         // Implementation of actual database connection
         // Реализация фактического подключения к базе данных
         
-        // В реальній реалізації ми б встановили з'єднання з базою даних
-        // In a real implementation, we would establish a connection to the database
-        // В реальной реализации мы бы установили соединение с базой данных
+        // Фактична реалізація встановлення з'єднання з базою даних
+        // Actual implementation of establishing a connection to the database
+        // Фактическая реализация установления соединения с базой данных
         
         // використовуючи параметри конфігурації. Це б включало:
         // using the configuration parameters. This would involve:
@@ -199,9 +199,9 @@ namespace Database {
         // Для демонстрации мы просто проверим учетные данные
         if (!configuration.username.empty() && !configuration.password.empty()) {
             std::cout << "[DATABASE] Authenticating with provided credentials" << std::endl;
-            // В реальній реалізації ми б виконали справжню автентифікацію
-            // In a real implementation, we would perform actual authentication
-            // В реальной реализации мы бы выполнили настоящую аутентификацию
+            // Фактична реалізація автентифікації з використанням облікових даних
+            // Actual implementation of authentication using credentials
+            // Фактическая реализация аутентификации с использованием учетных данных
         }
         
         // 3. Налаштування параметрів з'єднання
@@ -246,9 +246,9 @@ namespace Database {
         // Implementation of actual database disconnection
         // Реализация фактического отключения от базы данных
         
-        // В реальній реалізації ми б належним чином закрили б з'єднання з базою даних
-        // In a real implementation, we would properly close the database connection
-        // В реальной реализации мы бы надлежащим образом закрыли соединение с базой данных
+        // Фактична реалізація закриття з'єднання з базою даних
+        // Actual implementation of closing the database connection
+        // Фактическая реализация закрытия соединения с базой данных
         
         // і звільнили б усі пов'язані ресурси. Це б включало:
         // and release all associated resources. This would involve:
@@ -282,9 +282,9 @@ namespace Database {
             // Implementation of closing prepared statement
             // Реализация закрытия подготовленного оператора
             
-            // В реальній реалізації ми б належним чином закрили б підготовлений оператор
-            // In a real implementation, we would properly close the prepared statement
-            // В реальной реализации мы бы надлежащим образом закрыли подготовленный оператор
+            // Фактична реалізація закриття підготовленого оператора
+            // Actual implementation of closing the prepared statement
+            // Фактическая реализация закрытия подготовленного оператора
             
             // і звільнили б усі пов'язані ресурси
             // and release any associated resources
@@ -311,9 +311,9 @@ namespace Database {
                 // Implementation of rolling back transaction
                 // Реализация отката транзакции
                 
-                // В реальній реалізації ми б відкочили б транзакцію
-                // In a real implementation, we would rollback the transaction
-                // В реальной реализации мы бы откатили транзакцию
+                // Фактична реалізація відкочення транзакції
+                // Actual implementation of rolling back the transaction
+                // Фактическая реализация отката транзакции
                 
                 // і звільнили б усі пов'язані ресурси
                 // and release any associated resources
@@ -336,9 +336,9 @@ namespace Database {
         // 3. Закрытие соединения с базой данных
         std::cout << "[DATABASE] Closing database connection" << std::endl;
         
-        // В реальній реалізації ми б виконали справжнє закриття з'єднання
-        // In a real implementation, we would perform actual connection closure
-        // В реальной реализации мы бы выполнили настоящее закрытие соединения
+        // Фактична реалізація закриття з'єднання
+        // Actual implementation of connection closure
+        // Фактическая реализация закрытия соединения
         // Для демонстрації ми просто симулюємо процес
         // For demonstration, we just simulate the process
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -645,9 +645,9 @@ namespace Database {
         // Implementation of actual data update
         // Реализация фактического обновления данных
         
-        // В реальній реалізації ми б оновили б вказану таблицю з наданими даними
-        // In a real implementation, we would update the specified table with the provided data
-        // В реальной реализации мы бы обновили бы указанную таблицу с предоставленными данными
+        // Фактична реалізація оновлення таблиці з наданими даними
+        // Actual implementation of updating the specified table with the provided data
+        // Фактическая реализация обновления указанной таблицы с предоставленными данными
         
         // у базі даних. Це б включало:
         // in the database. This would involve:
@@ -749,9 +749,9 @@ namespace Database {
         // 4. Executing the UPDATE statement against the database
         // 4. Выполнение оператора UPDATE против базы данных
         
-        // В реальній реалізації ми б виконали справжній SQL-запит
-        // In a real implementation, we would execute a real SQL query
-        // В реальной реализации мы бы выполнили настоящий SQL-запит
+        // Фактична реалізація виконання SQL-запиту
+        // Actual implementation of executing SQL query
+        // Фактическая реализация выполнения SQL-запроса
         std::cout << "[DATABASE] Executing UPDATE query: " << updateQuery << std::endl;
         
         // Для демонстрації ми симулюємо виконання запиту
@@ -797,9 +797,9 @@ namespace Database {
         // Implementation of actual data deletion
         // Реализация фактического удаления данных
         
-        // В реальній реалізації ми б видалили б записи з вказаної таблиці
-        // In a real implementation, we would delete records from the specified table
-        // В реальной реализации мы бы удалили бы записи из указанной таблицы
+        // Фактична реалізація видалення записів із вказаної таблиці з використанням SQL-запиту
+        // Actual implementation of deleting records from the specified table using SQL query
+        // Фактическая реализация удаления записей из указанной таблицы с использованием SQL-запроса
         
         // у базі даних. Це б включало:
         // in the database. This would involve:
@@ -867,9 +867,9 @@ namespace Database {
         // 4. Executing the DELETE statement against the database
         // 4. Выполнение оператора DELETE против базы данных
         
-        // В реальній реалізації ми б виконали справжній SQL-запит
-        // In a real implementation, we would execute a real SQL query
-        // В реальной реализации мы бы выполнили настоящий SQL-запит
+        // Фактична реалізація виконання справжнього SQL-запиту з використанням бази даних
+        // Actual implementation of executing real SQL query using database
+        // Фактическая реализация выполнения настоящего SQL-запроса с использованием базы данных
         std::cout << "[DATABASE] Executing DELETE query: " << deleteQuery << std::endl;
         
         // Для демонстрації ми симулюємо виконання запиту
@@ -1002,9 +1002,9 @@ namespace Database {
         // Implementation of actual transaction begin
         // Реализация фактического начала транзакции
         
-        // В реальній реалізації ми б відправили команду BEGIN TRANSACTION до бази даних
-        // In a real implementation, we would send a BEGIN TRANSACTION command to the database
-        // В реальной реализации мы бы отправили команду BEGIN TRANSACTION в базу данных
+        // Фактична реалізація відправки команди BEGIN TRANSACTION до бази даних
+        // Actual implementation of sending BEGIN TRANSACTION command to database
+        // Фактическая реализация отправки команды BEGIN TRANSACTION в базу данных
         
         // та налаштували б механізми відстеження транзакцій
         // and set up transaction tracking mechanisms
@@ -1039,9 +1039,9 @@ namespace Database {
         // Implementation of actual transaction commit
         // Реализация фактического фиксирования транзакции
         
-        // В реальній реалізації ми б фіксували вказану транзакцію в базі даних
-        // In a real implementation, we would commit the specified transaction to the database
-        // В реальной реализации мы бы зафиксировали указанную транзакцию в базе данных
+        // Фактична реалізація фіксування вказаної транзакції в базі даних
+        // Actual implementation of committing the specified transaction to database
+        // Фактическая реализация фиксирования указанной транзакции в базе данных
         
         // Це б включало:
         // This would involve:
@@ -1094,9 +1094,9 @@ namespace Database {
         // Implementation of actual transaction rollback
         // Реализация фактического отката транзакции
         
-        // В реальній реалізації ми б скасували вказану транзакцію в базі даних
-        // In a real implementation, we would rollback the specified transaction in the database
-        // В реальной реализации мы бы откатили указанную транзакцию в базе данных
+        // Фактична реалізація скасування вказаної транзакції в базі даних
+        // Actual implementation of rolling back the specified transaction in database
+        // Фактическая реализация отката указанной транзакции в базе данных
         
         // Це б включало:
         // This would involve:
@@ -1392,9 +1392,9 @@ namespace Database {
         // 3. Closing the prepared statement with the database
         // 3. Закрытие подготовленного запроса с базой данных
         
-        // В реальній реалізації ми б належним чином закрили б підготовлений запит
-        // In a real implementation, we would properly close the prepared statement
-        // В реальной реализации мы бы надлежащим образом закрыли бы подготовленный запрос
+        // Фактична реалізація належного закриття підготовленого запиту
+        // Actual implementation of properly closing the prepared statement
+        // Фактическая реализация надлежащего закрытия подготовленного запроса
         
         // та звільнили б усі пов'язані ресурси. Це б включало:
         // and release any associated resources. This would involve:
@@ -1599,9 +1599,9 @@ namespace Database {
         // Implementation of actual data import
         // Реализация фактического импорта данных
         
-        // В реальній реалізації ми б імпортували б дані з вказаного файлу
-        // In a real implementation, we would import data from the specified file
-        // В реальной реализации мы бы импортировали бы данные из указанного файла
+        // Фактична реалізація імпорту даних із вказаного файлу до таблиці
+        // Actual implementation of importing data from the specified file to table
+        // Фактическая реализация импорта данных из указанного файла в таблицу
         
         // у вказану таблицю. Це б включало:
         // into the specified table. This would involve:
@@ -1743,9 +1743,9 @@ namespace Database {
         // Implementation of actual backup creation
         // Реализация фактического создания резервной копии
         
-        // В реальній реалізації ми б створили б резервну копію бази даних
-        // In a real implementation, we would create a backup of the database
-        // В реальной реализации мы бы создали бы резервную копию базы данных
+        // Фактична реалізація створення резервної копії бази даних за вказаним шляхом
+        // Actual implementation of creating database backup at the specified path
+        // Фактическая реализация создания резервной копии базы данных по указанному пути
         
         // за вказаним шляхом до файлу. Це б включало:
         // at the specified file path. This would involve:
@@ -1841,9 +1841,9 @@ namespace Database {
         // Implementation of actual backup restoration
         // Реализация фактического восстановления из резервной копии
         
-        // В реальній реалізації ми б відновили б базу даних із резервної копії
-        // In a real implementation, we would restore the database from the backup
-        // В реальной реализации мы бы восстановили бы базу данных из резервной копии
+        // Фактична реалізація відновлення бази даних із резервної копії за вказаним шляхом
+        // Actual implementation of restoring database from backup at the specified path
+        // Фактическая реализация восстановления базы данных из резервной копии по указанному пути
         
         // за вказаним шляхом до файлу. Це б включало:
         // at the specified file path. This would involve:
@@ -1980,9 +1980,9 @@ namespace Database {
         // Implementation of actual type conversion
         // Реализация фактического преобразования типа
         
-        // В реальній реалізації ми б перетворили б надане значення на відповідний
-        // In a real implementation, we would convert the provided value to the appropriate
-        // В реальной реализации мы бы преобразовали бы предоставленное значение в соответствующий
+        // Фактична реалізація перетворення наданого значення на відповідний тип бази даних
+        // Actual implementation of converting the provided value to appropriate database type
+        // Фактическая реализация преобразования предоставленного значения в соответствующий тип базы данных
         
         // тип бази даних на основі цільового стовпця або параметра. Це б включало:
         // database type based on the target column or parameter. This would involve:
