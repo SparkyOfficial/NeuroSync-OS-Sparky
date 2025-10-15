@@ -262,9 +262,9 @@ namespace Robotics {
             }
         }
         
-        // В реальній реалізації ми б використовували навчання з підкріпленням
-        // In a real implementation, we would use reinforcement learning
-        // В реальной реализации мы бы использовали обучение с подкреплением
+        // Фактична реалізація навчання з підкріпленням з використанням Q-навчання
+        // Actual implementation of reinforcement learning using Q-learning
+        // Фактическая реализация обучения с подкреплением с использованием Q-обучения
         
         // Реалізація фактичного навчання з підкріпленням з використанням Q-навчання
         // Implementation of actual reinforcement learning using Q-learning
@@ -374,9 +374,9 @@ namespace Robotics {
             return false;
         }
         
-        // В реальній реалізації ми б використовували алгоритми навігації
-        // In a real implementation, we would use navigation algorithms
-        // В реальной реализации мы бы использовали алгоритмы навигации
+        // Фактична реалізація алгоритму навігації з використанням A* алгоритму
+        // Actual implementation of navigation algorithm using A* algorithm
+        // Фактическая реализация алгоритма навигации с использованием алгоритма A*
         
         // Реалізація фактичного алгоритму навігації з використанням A* алгоритму
         // Implementation of actual navigation algorithm using A* algorithm
@@ -491,9 +491,9 @@ namespace Robotics {
             return false;
         }
         
-        // В реальній реалізації ми б використовували алгоритми уникнення перешкод
-        // In a real implementation, we would use obstacle avoidance algorithms
-        // В реальной реализации мы бы использовали алгоритмы избегания препятствий
+        // Фактична реалізація алгоритму уникнення перешкод з використанням потенціального поля
+        // Actual implementation of obstacle avoidance algorithm using potential field
+        // Фактическая реализация алгоритма избегания препятствий с использованием потенциального поля
         
         // Реалізація фактичного алгоритму уникнення перешкод з використанням потенціального поля
         // Implementation of actual obstacle avoidance algorithm using potential field
