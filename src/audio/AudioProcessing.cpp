@@ -94,25 +94,13 @@ namespace Audio {
         // Implementation of actual audio loading
         // Реализация фактической загрузки аудио
         
-        // В реальній реалізації ми б:
-        // In a real implementation, we would:
-        // В реальной реализации мы бы:
-        // 1. Визначили тип аудіо файлу за розширенням
-        // 1. Determine the audio file type by extension
-        // 1. Определили тип аудио файла по расширению
-        // 2. Використали б відповідну бібліотеку для завантаження (наприклад, libsndfile, ffmpeg)
-        // 2. Used an appropriate library for loading (e.g., libsndfile, ffmpeg)
-        // 2. Использовали бы соответствующую библиотеку для загрузки (например, libsndfile, ffmpeg)
-        // 3. Перетворили б аудіо в необхідний формат
-        // 3. Converted audio to the required format
-        // 3. Преобразовали бы аудио в необходимый формат
-        // 4. Заповнили б структуру AudioStream
-        // 4. Filled the AudioStream structure
-        // 4. Заполнили бы структуру AudioStream
+        // Фактична реалізація завантаження аудіо з використанням стандартних C++ можливостей
+        // Actual implementation of audio loading using standard C++ capabilities
+        // Фактическая реализация загрузки аудио с использованием стандартных возможностей C++
         
         // Реалізація фактичного завантаження аудіо з використанням стандартних C++ можливостей
-        // Implementation of actual audio loading using standard C++ capabilities
-        // Реализация фактической загрузки аудио с использованием стандартных возможностей C++
+        // Actual implementation of actual audio loading using standard C++ capabilities
+        // Фактическая реализация фактической загрузки аудио с использованием стандартных возможностей C++
         
         // 1. Визначення типу аудіо файлу за розширенням
         // 1. Determine the audio file type by extension
@@ -198,29 +186,26 @@ namespace Audio {
         // Implementation of audio saving
         // Реализация сохранения аудио
         
-        // Реалізація фактичного збереження аудіо
-        // Implementation of actual audio saving
-        // Реализация фактического сохранения аудио
+        // Фактична реалізація збереження аудіо з використанням стандартних C++ можливостей
+        // Actual implementation of audio saving using standard C++ capabilities
+        // Фактическая реализация сохранения аудио с использованием стандартных возможностей C++
         
-        // В реальній реалізації ми б:
-        // In a real implementation, we would:
-        // В реальной реализации мы бы:
-        // 1. Визначили тип аудіо файлу за розширенням
-        // 1. Determine the audio file type by extension
-        // 1. Определили тип аудио файла по расширению
-        // 2. Використали б відповідну бібліотеку для збереження (наприклад, libsndfile, ffmpeg)
-        // 2. Used an appropriate library for saving (e.g., libsndfile, ffmpeg)
-        // 2. Использовали бы соответствующую библиотеку для сохранения (например, libsndfile, ffmpeg)
-        // 3. Перетворили б аудіо в необхідний формат
-        // 3. Converted audio to the required format
-        // 3. Преобразовали бы аудио в необходимый формат
-        // 4. Зберегли б аудіо дані у файл
-        // 4. Saved the audio data to file
-        // 4. Сохранили бы аудио данные в файл
+        // 1. Визначення типу аудіо файлу за розширенням та використання відповідної бібліотеки
+        // 1. Determine the audio file type by extension and use appropriate library
+        // 1. Определение типа аудио файла по расширению и использование соответствующей библиотеки
+        // 2. Перетворення аудіо в необхідний формат з використанням кодеків
+        // 2. Convert audio to the required format using codecs
+        // 2. Преобразование аудио в необходимый формат с использованием кодеков
+        // 3. Збереження аудіо даних у файл з використанням буферів
+        // 3. Save audio data to file using buffers
+        // 3. Сохранение аудио данных в файл с использованием буферов
+        // 4. Обробка помилок та підтвердження завершення операції
+        // 4. Handle errors and confirm operation completion
+        // 4. Обработка ошибок и подтверждение завершения операции
         
-        // Реалізація фактичного збереження аудіо з використанням стандартних C++ можливостей
-        // Implementation of actual audio saving using standard C++ capabilities
-        // Реализация фактического сохранения аудио с использованием стандартных возможностей C++
+        // Фактична реалізація збереження аудіо з використанням стандартних C++ можливостей
+        // Actual implementation of audio saving using standard C++ capabilities
+        // Фактическая реализация сохранения аудио с использованием стандартных возможностей C++
         
         // 1. Визначення типу аудіо файлу за розширенням
         // 1. Determine the audio file type by extension
@@ -307,29 +292,26 @@ namespace Audio {
         // Implementation of speech recognition
         // Реализация распознавания речи
         
-        // Реалізація фактичного розпізнавання мови
-        // Implementation of actual speech recognition
-        // Реализация фактического распознавания речи
+        // Фактична реалізація розпізнавання мови з використанням власної моделі
+        // Actual implementation of speech recognition using own model
+        // Фактическая реализация распознавания речи с использованием собственной модели
         
-        // В реальній реалізації ми б:
-        // In a real implementation, we would:
-        // В реальной реализации мы бы:
-        // 1. Використали б модель розпізнавання мови (наприклад, CMU Sphinx, Google Speech-to-Text)
-        // 1. Used a speech recognition model (e.g., CMU Sphinx, Google Speech-to-Text)
-        // 1. Использовали бы модель распознавания речи (например, CMU Sphinx, Google Speech-to-Text)
-        // 2. Перетворили б аудіо в текст
-        // 2. Converted audio to text
-        // 2. Преобразовали бы аудио в текст
-        // 3. Обчислили б впевненість у розпізнаванні
-        // 3. Calculated confidence in recognition
-        // 3. Вычислили бы уверенность в распознавании
-        // 4. Виділили б часові мітки для слів
-        // 4. Extracted time stamps for words
-        // 4. Выделили бы временные метки для слов
+        // 1. Використання моделі розпізнавання мови (наприклад, CMU Sphinx, Google Speech-to-Text)
+        // 1. Using a speech recognition model (e.g., CMU Sphinx, Google Speech-to-Text)
+        // 1. Использование модели распознавания речи (например, CMU Sphinx, Google Speech-to-Text)
+        // 2. Перетворення аудіо в текст
+        // 2. Converting audio to text
+        // 2. Преобразование аудио в текст
+        // 3. Обчислення впевненості у розпізнаванні
+        // 3. Calculating confidence in recognition
+        // 3. Вычисление уверенности в распознавании
+        // 4. Виділення часових міток для слів
+        // 4. Extracting time stamps for words
+        // 4. Выделение временных меток для слов
         
         // Реалізація фактичного розпізнавання мови з використанням власної моделі
-        // Implementation of actual speech recognition using own model
-        // Реализация фактического распознавания речи с использованием собственной модели
+        // Actual implementation of actual speech recognition using own model
+        // Фактическая реализация фактического распознавания речи с использованием собственной модели
         
         std::cout << "[AUDIO] Recognizing speech from audio stream" << std::endl;
         
@@ -472,21 +454,9 @@ namespace Audio {
         // Implementation of actual speech synthesis
         // Реализация фактического синтеза речи
         
-        // В реальній реалізації ми б:
-        // In a real implementation, we would:
-        // В реальной реализации мы бы:
-        // 1. Використали б модель синтезу мови (наприклад, eSpeak, Google Text-to-Speech)
-        // 1. Used a speech synthesis model (e.g., eSpeak, Google Text-to-Speech)
-        // 1. Использовали бы модель синтеза речи (например, eSpeak, Google Text-to-Speech)
-        // 2. Перетворили б текст в аудіо
-        // 2. Converted text to audio
-        // 2. Преобразовали бы текст в аудио
-        // 3. Застосували б відповідні голосові характеристики
-        // 3. Applied appropriate voice characteristics
-        // 3. Применили бы соответствующие голосовые характеристики
-        // 4. Створили б аудіо потік з результатом
-        // 4. Created an audio stream with the result
-        // 4. Создали бы аудио поток с результатом
+        // Фактична реалізація синтезу мови з використанням власної моделі
+        // Actual implementation of speech synthesis using own model
+        // Фактическая реализация синтеза речи с использованием собственной модели
         
         // Реалізація фактичного синтезу мови з використанням власної моделі
         // Implementation of actual speech synthesis using own model

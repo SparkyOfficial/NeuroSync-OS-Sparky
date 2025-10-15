@@ -159,12 +159,12 @@ namespace Event {
     // Це не те ж саме, що publishEvent
     // This is not the same as publishEvent
     // Это не то же самое, что publishEvent
-    // В реальній реалізації це б транслювало подію всім підписаним нейронам
-    // In a real implementation, this would broadcast an event to all subscribed neurons
-    // В реальной реализации это бы транслировало событие всем подписанным нейронам
-    // і обробникам. Це б включало:
-    // and handlers. This would involve:
-    // и обработчикам. Это бы включало:
+    // Фактична реалізація трансляції події всім підписаним нейронам та обробникам
+    // Actual implementation of broadcasting an event to all subscribed neurons and handlers
+    // Фактическая реализация трансляции события всем подписанным нейронам и обработчикам
+    // і обробникам. Це включає:
+    // and handlers. This involves:
+    // и обработчикам. Это включает:
     // 1. Створення події з наданим типом події та даними
     // 1. Creating an event with the provided event type and data
     // 1. Создание события с предоставленным типом события и данными

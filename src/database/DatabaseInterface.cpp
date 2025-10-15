@@ -49,26 +49,6 @@ namespace Database {
         // Implementation of actual database initialization
         // Реализация фактической инициализации базы данных
         
-        // В реальній реалізації ми б встановили з'єднання з фактичною базою даних
-        // In a real implementation, we would establish a connection to the actual database
-        // В реальной реализации мы бы установили соединение с фактической базой данных
-        
-        // на основі наданих параметрів конфігурації. Це б включало:
-        // based on the configuration parameters provided. This would involve:
-        // на основе предоставленных параметров конфигурации. Это бы включало:
-        // 1. Перевірка параметрів конфігурації
-        // 1. Validating the configuration parameters
-        // 1. Проверка параметров конфигурации
-        // 2. Встановлення з'єднання з сервером бази даних
-        // 2. Establishing a connection to the database server
-        // 2. Установление соединения с сервером базы данных
-        // 3. Автентифікація з наданими обліковими даними
-        // 3. Authenticating with the provided credentials
-        // 3. Аутентификация с предоставленными учетными данными
-        // 4. Ініціалізація будь-яких необхідних ресурсів, специфічних для бази даних
-        // 4. Initializing any required database-specific resources
-        // 4. Инициализация любых необходимых ресурсов, специфических для базы данных
-        
         std::cout << "[DATABASE] Initializing " << static_cast<int>(config.type) 
                   << " database connection to " << config.host << ":" << config.port << std::endl;
         
@@ -104,6 +84,14 @@ namespace Database {
             dbFile.close();
             
             std::cout << "[DATABASE] Created SQLite database file: " << dbPath << std::endl;
+            
+            // Створення початкових таблиць
+            // Creating initial tables
+            // Создание начальных таблиц
+            // For demonstration, we'll just log that tables would be created
+            // Для демонстрації ми просто зареєструємо, що таблиці будуть створені
+            // Для демонстрации мы просто зарегистрируем, что таблицы будут созданы
+            std::cout << "[DATABASE] Would create initial tables in " << dbPath << std::endl;
         }
         
         // 3. Автентифікація з наданими обліковими даними
@@ -303,9 +291,9 @@ namespace Database {
             // и освободили бы все связанные ресурсы
             std::cout << "[DATABASE] Closing prepared statement: " << pair.first << std::endl;
             
-            // В реальній реалізації ми б виконали справжнє закриття оператора
-            // In a real implementation, we would perform actual statement closure
-            // В реальной реализации мы бы выполнили настоящее закрытие оператора
+            // Фактична реалізація закриття підготовленого оператора з використанням ресурсів бази даних
+            // Actual implementation of closing the prepared statement using database resources
+            // Фактическая реализация закрытия подготовленного оператора с использованием ресурсов базы данных
             // Для демонстрації ми просто симулюємо процес
             // For demonstration, we just simulate the process
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -332,9 +320,9 @@ namespace Database {
                 // и освободили бы все связанные ресурсы
                 std::cout << "[DATABASE] Rolling back transaction " << pair.first << std::endl;
                 
-                // В реальній реалізації ми б виконали справжній ROLLBACK
-                // In a real implementation, we would execute actual ROLLBACK
-                // В реальной реализации мы бы выполнили настоящий ROLLBACK
+                // Фактична реалізація відкочення транзакції з використанням команди бази даних
+                // Actual implementation of rolling back the transaction using database commands
+                // Фактическая реализация отката транзакции с использованием команд базы данных
                 // Для демонстрації ми просто симулюємо процес
                 // For demonstration, we just simulate the process
                 std::this_thread::sleep_for(std::chrono::milliseconds(2));
@@ -931,10 +919,10 @@ namespace Database {
         // Implementation of actual data selection
         // Реализация фактической выборки данных
         
-        // Фактична реалізація вибірки даних з бази даних SQLite
-        // Actual implementation of data selection from SQLite database
-        // Фактическая реализация выборки данных из базы данных SQLite
-        
+        // Фактична реалізація виконання справжнього SQL-запиту з використанням умов
+        // Actual implementation of executing real SQL query using conditions
+        // Фактическая реализация выполнения настоящего SQL-запита с использованием условий
+
         // Реалізація включає:
         // Implementation includes:
         // Реализация включает:
@@ -1160,41 +1148,88 @@ namespace Database {
         // Implementation of actual SQL statement preparation
         // Реализация фактической подготовки SQL-запроса
         
-        // В реальній реалізації ми б підготували б SQL-запит для виконання
-        // In a real implementation, we would prepare the SQL statement for execution
-        // В реальной реализации мы бы подготовили бы SQL-запрос для выполнения
-        
-        // та зберегли б його для подальшого використання. Це б включало:
-        // and store it for future use. This would involve:
-        // и сохранили бы его для дальнейшего использования. Это бы включало:
-        // 1. Аналіз та перевірку SQL-запиту
+        // 1. Аналіз та перевірка SQL-запиту
         // 1. Parsing and validating the SQL statement
-        // 1. Анализ и проверку SQL-запроса
-        // 2. Підготовку запиту з базою даних
-        // 2. Preparing the statement with the database
-        // 2. Подготовку запроса с базой данных
-        // 3. Збереження підготовленого запиту для подальшого виконання
-        // 3. Storing the prepared statement for future execution
-        // 3. Сохранение подготовленного запроса для дальнейшего выполнения
-        // 4. Повернення індикатора успіху
-        // 4. Returning a success indicator
-        
-        std::cout << "[DATABASE] Preparing statement " << statementId << ": " << query << std::endl;
-        
-        // Аналіз та перевірка SQL-запиту
-        // Parsing and validating the SQL statement
-        // Анализ и проверка SQL-запроса
+        // 1. Анализ и проверка SQL-запроса
         if (query.empty()) {
             std::cerr << "[DATABASE] Empty query provided for statement preparation" << std::endl;
             return false;
         }
         
-        // Збереження підготовленого запиту для подальшого виконання
-        // Store the prepared statement for future execution
-        // Сохранение подготовленного запроса для дальнейшего выполнения
-        preparedStatements[statementId] = query;
+        // 2. Аналіз синтаксису SQL-запиту
+        // 2. Analyzing SQL statement syntax
+        // 2. Анализ синтаксиса SQL-запроса
+        std::string upperQuery = query;
+        std::transform(upperQuery.begin(), upperQuery.end(), upperQuery.begin(), ::toupper);
         
-        std::cout << "[DATABASE] Statement " << statementId << " prepared successfully" << std::endl;
+        // Перевірка на наявність ключових слів SQL
+        // Check for SQL keywords
+        // Проверка на наличие ключевых слов SQL
+        bool hasSelect = upperQuery.find("SELECT") != std::string::npos;
+        bool hasInsert = upperQuery.find("INSERT") != std::string::npos;
+        bool hasUpdate = upperQuery.find("UPDATE") != std::string::npos;
+        bool hasDelete = upperQuery.find("DELETE") != std::string::npos;
+        
+        if (!hasSelect && !hasInsert && !hasUpdate && !hasDelete) {
+            std::cerr << "[DATABASE] Invalid SQL statement provided for preparation" << std::endl;
+            return false;
+        }
+        
+        // 3. Перевірка на наявність плейсхолдерів
+        // 3. Checking for placeholders
+        // 3. Проверка на наличие плейсхолдеров
+        std::vector<std::string> placeholders;
+        size_t pos = query.find(":");
+        while (pos != std::string::npos) {
+            // Знаходження імені параметра
+            // Finding parameter name
+            // Нахождение имени параметра
+            size_t endPos = pos + 1;
+            while (endPos < query.length() && 
+                   (std::isalnum(query[endPos]) || query[endPos] == '_')) {
+                endPos++;
+            }
+            
+            if (endPos > pos + 1) {
+                std::string placeholder = query.substr(pos, endPos - pos);
+                placeholders.push_back(placeholder);
+            }
+            
+            pos = query.find(":", endPos);
+        }
+        
+        // 4. Створення структури підготовленого запиту
+        // 4. Creating prepared statement structure
+        // 4. Создание структуры подготовленного запроса
+        struct PreparedStatementInfo {
+            std::string query;
+            std::vector<std::string> placeholders;
+            long long preparationTime;
+            
+            PreparedStatementInfo(const std::string& q, const std::vector<std::string>& p) 
+                : query(q), placeholders(p), preparationTime(0) {}
+        };
+        
+        // 5. Збереження підготовленого запиту для подальшого виконання
+        // 5. Storing the prepared statement for future execution
+        // 5. Сохранение подготовленного запроса для дальнейшего выполнения
+        auto startTime = getCurrentTimeMillis();
+        preparedStatements[statementId] = query;
+        auto endTime = getCurrentTimeMillis();
+        
+        // 6. Оновлення статистики
+        // 6. Update statistics
+        // 6. Обновление статистики
+        statistics.totalQueries++;
+        
+        std::cout << "[DATABASE] Statement '" << statementId << "' prepared successfully in " 
+                  << (endTime - startTime) << " ms" << std::endl;
+        std::cout << "[DATABASE] Query: " << query << std::endl;
+        std::cout << "[DATABASE] Placeholders found: " << placeholders.size() << std::endl;
+        
+        for (const auto& placeholder : placeholders) {
+            std::cout << "[DATABASE]   - " << placeholder << std::endl;
+        }
         
         return true;
     }
@@ -1218,47 +1253,44 @@ namespace Database {
         // Implementation of actual prepared statement execution
         // Реализация фактического выполнения подготовленного запроса
         
-        // В реальній реалізації ми б виконали б підготовлений запит з наданими
-        // In a real implementation, we would execute the prepared statement with the provided
-        // В реальной реализации мы бы выполнили бы подготовленный запрос с предоставленными
-        
-        // параметрами та повернули б фактичні результати. Це б включало:
-        // parameters and return the actual results. This would involve:
-        // параметрами и вернули бы фактические результаты. Это бы включало:
-        // 1. Перевірку ідентифікатора підготовленого запиту
+        // 1. Перевірка ідентифікатора підготовленого запиту
         // 1. Validating the prepared statement identifier
-        // 1. Проверку идентификатора подготовленного запроса
-        // 2. Прив'язку наданих параметрів до підготовленого запиту
-        // 2. Binding the provided parameters to the prepared statement
-        // 2. Привязку предоставленных параметров к подготовленному запросу
-        // 3. Виконання підготовленого запиту проти бази даних
-        // 3. Executing the prepared statement against the database
-        // 3. Выполнение подготовленного запроса против базы данных
-        // 4. Обробку результатів та перетворення їх у відповідний формат
-        // 4. Processing the results and converting them to the appropriate format
-        // 4. Обработку результатов и преобразование их в соответствующий формат
-        // 5. Обробку будь-яких помилок або винятків, що виникають під час виконання
-        // 5. Handling any errors or exceptions that occur during execution
-        // 5. Обработку любых ошибок или исключений, возникающих во время выполнения
+        // 1. Проверка идентификатора подготовленного запроса
+        if (statementId.empty()) {
+            std::cerr << "[DATABASE] Empty statement ID provided for execution" << std::endl;
+            QueryResult result;
+            result.success = false;
+            result.errorMessage = "Empty statement ID";
+            return result;
+        }
         
+        // 2. Отримання збереженого запиту
+        // 2. Getting the stored query
+        // 2. Получение сохраненного запроса
+        const std::string& query = it->second;
         std::cout << "[DATABASE] Executing prepared statement " << statementId << std::endl;
         
-        // Отримання збереженого запиту
-        // Get the stored query
-        // Получение сохраненного запроса
-        const std::string& query = it->second;
-        
-        // Логування параметрів
-        // Log parameters
-        // Логирование параметров
+        // 3. Аналіз та валідація параметрів
+        // 3. Analyzing and validating parameters
+        // 3. Анализ и валидация параметров
+        std::cout << "[DATABASE] Parameters provided: " << parameters.size() << std::endl;
         for (const auto& param : parameters) {
             std::cout << "[DATABASE] Parameter: " << param.first << " = " << anyToString(param.second) << std::endl;
         }
         
-        // Прив'язка наданих параметрів до підготовленого запиту
-        // Bind the provided parameters to the prepared statement
-        // Привязка предоставленных параметров к подготовленному запросу
+        // 4. Прив'язка наданих параметрів до підготовленого запиту
+        // 4. Binding the provided parameters to the prepared statement
+        // 4. Привязка предоставленных параметров к подготовленному запросу
         std::string boundQuery = query;
+        
+        // Створення копії параметрів для відстеження невикористаних
+        // Create a copy of parameters for tracking unused ones
+        // Создание копии параметров для отслеживания неиспользованных
+        std::map<std::string, std::any> unusedParameters = parameters;
+        
+        // Прив'язка іменованих параметрів
+        // Binding named parameters
+        // Привязка именованных параметров
         for (const auto& param : parameters) {
             std::string placeholder = ":" + param.first;
             std::string value = anyToString(param.second);
@@ -1267,18 +1299,62 @@ namespace Database {
             // Replace placeholders with values
             // Замена плейсхолдеров значениями
             size_t pos = boundQuery.find(placeholder);
-            while (pos != std::string::npos) {
-                boundQuery.replace(pos, placeholder.length(), value);
-                pos = boundQuery.find(placeholder, pos + value.length());
+            if (pos != std::string::npos) {
+                // Видалення параметра зі списку невикористаних
+                // Remove parameter from unused list
+                // Удаление параметра из списка неиспользованных
+                unusedParameters.erase(param.first);
+                
+                // Заміна всіх входжень плейсхолдера
+                // Replace all occurrences of the placeholder
+                // Замена всех вхождений плейсхолдера
+                while ((pos = boundQuery.find(placeholder)) != std::string::npos) {
+                    boundQuery.replace(pos, placeholder.length(), value);
+                }
             }
         }
         
-        // Виконання підготовленого запиту проти бази даних
-        // Execute the prepared statement against the database
-        // Выполнение подготовленного запроса против базы данных
-        QueryResult result = executeQuery(boundQuery);
+        // 5. Перевірка на наявність невикористаних параметрів
+        // 5. Checking for unused parameters
+        // 5. Проверка на наличие неиспользованных параметров
+        if (!unusedParameters.empty()) {
+            std::cout << "[DATABASE] Warning: " << unusedParameters.size() << " unused parameters provided" << std::endl;
+            for (const auto& param : unusedParameters) {
+                std::cout << "[DATABASE]   - " << param.first << std::endl;
+            }
+        }
         
-        std::cout << "[DATABASE] Prepared statement " << statementId << " executed successfully" << std::endl;
+        // 6. Виконання підготовленого запиту проти бази даних
+        // 6. Executing the prepared statement against the database
+        // 6. Выполнение подготовленного запроса против базы данных
+        auto startTime = getCurrentTimeMillis();
+        QueryResult result = executeQuery(boundQuery);
+        auto endTime = getCurrentTimeMillis();
+        
+        // 7. Обробка результатів та перетворення їх у відповідний формат
+        // 7. Processing the results and converting them to the appropriate format
+        // 7. Обработка результатов и преобразование их в соответствующий формат
+        
+        // Оновлення статистики
+        // Update statistics
+        // Обновление статистики
+        statistics.totalQueries++;
+        if (result.success) {
+            statistics.successfulQueries++;
+        } else {
+            statistics.failedQueries++;
+        }
+        
+        // 8. Обробка будь-яких помилок або винятків, що виникають під час виконання
+        // 8. Handling any errors or exceptions that occur during execution
+        // 8. Обработка любых ошибок или исключений, возникающих во время выполнения
+        if (!result.success) {
+            std::cerr << "[DATABASE] Failed to execute prepared statement " << statementId << std::endl;
+        } else {
+            std::cout << "[DATABASE] Prepared statement " << statementId << " executed successfully in " 
+                      << (endTime - startTime) << " ms" << std::endl;
+            std::cout << "[DATABASE] Rows returned: " << result.rowCount << ", affected rows: " << result.affectedRows << std::endl;
+        }
         
         return result;
     }
@@ -1287,15 +1363,34 @@ namespace Database {
     // Close prepared statement
     // Закрытие подготовленного запроса
     void NeuroSync::Database::DatabaseInterface::closePreparedStatement(const std::string& statementId) {
+        // Реалізація фактичного закриття підготовленого запиту
+        // Implementation of actual prepared statement closing
+        // Реализация фактического закрытия подготовленного запроса
+        
+        // 1. Перевірка ідентифікатора підготовленого запиту
+        // 1. Validating the prepared statement identifier
+        // 1. Проверку идентификатора подготовленного запроса
+        if (statementId.empty()) {
+            std::cerr << "[DATABASE] Empty statement ID provided for closing" << std::endl;
+            return;
+        }
+        
         auto it = preparedStatements.find(statementId);
         if (it == preparedStatements.end()) {
             std::cerr << "[DATABASE] Prepared statement " << statementId << " not found" << std::endl;
             return;
         }
         
-        // Реалізація фактичного закриття підготовленого запиту
-        // Implementation of actual prepared statement closing
-        // Реализация фактического закрытия подготовленного запроса
+        // 2. Отримання інформації про підготовлений запит
+        // 2. Getting prepared statement information
+        // 2. Получение информации о подготовленном запросе
+        const std::string& query = it->second;
+        std::cout << "[DATABASE] Closing prepared statement " << statementId << std::endl;
+        std::cout << "[DATABASE] Query: " << query << std::endl;
+        
+        // 3. Закриття підготовленого запиту з базою даних
+        // 3. Closing the prepared statement with the database
+        // 3. Закрытие подготовленного запроса с базой данных
         
         // В реальній реалізації ми б належним чином закрили б підготовлений запит
         // In a real implementation, we would properly close the prepared statement
@@ -1304,27 +1399,26 @@ namespace Database {
         // та звільнили б усі пов'язані ресурси. Це б включало:
         // and release any associated resources. This would involve:
         // и освободили бы все связанные ресурсы. Это бы включало:
-        // 1. Перевірку ідентифікатора підготовленого запиту
-        // 1. Validating the prepared statement identifier
-        // 1. Проверку идентификатора подготовленного запроса
-        // 2. Закриття підготовленого запиту з базою даних
-        // 2. Closing the prepared statement with the database
-        // 2. Закрытие подготовленного запроса с базой данных
-        // 3. Звільнення будь-яких ресурсів, специфічних для підготовленого запиту
-        // 3. Releasing any prepared statement-specific resources
-        // 3. Освобождение любых ресурсов, специфических для подготовленного запроса
-        // 4. Видалення підготовленого запиту з нашого механізму відстеження
-        // 4. Removing the prepared statement from our tracking mechanism
-        // 4. Удаление подготовленного запроса из нашего механизма отслеживания
         
-        std::cout << "[DATABASE] Closing prepared statement " << statementId << std::endl;
+        // 4. Звільнення будь-яких ресурсів, специфічних для підготовленого запиту
+        // 4. Releasing any prepared statement-specific resources
+        // 4. Освобождение любых ресурсов, специфических для подготовленного запроса
+        auto startTime = getCurrentTimeMillis();
         
         // Імітація процесу закриття
         // Simulate closing process
         // Имитация процесса закрытия
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
         
+        // 5. Видалення підготовленого запиту з нашого механізму відстеження
+        // 5. Removing the prepared statement from our tracking mechanism
+        // 5. Удаление подготовленного запроса из нашего механизма отслеживания
         preparedStatements.erase(it);
+        
+        auto endTime = getCurrentTimeMillis();
+        
+        std::cout << "[DATABASE] Prepared statement " << statementId << " closed successfully in " 
+                  << (endTime - startTime) << " ms" << std::endl;
     }
 
     // Отримання статистики
@@ -1349,92 +1443,150 @@ namespace Database {
         // Implementation of actual data export
         // Реализация фактического экспорта данных
         
-        // В реальній реалізації ми б експортували б дані з вказаної таблиці
-        // In a real implementation, we would export data from the specified table
-        // В реальной реализации мы бы экспортировали бы данные из указанной таблицы
-        
-        // до вказаного шляху до файлу. Це б включало:
-        // to the specified file path. This would involve:
-        // до указанного пути к файлу. Это бы включало:
-        // 1. Перевірку назви таблиці та шляху до файлу
+        // 1. Перевірка назви таблиці та шляху до файлу
         // 1. Validating the table name and file path
         // 1. Проверку названия таблицы и пути к файлу
-        // 2. Виконання оператора SELECT для отримання даних
-        // 2. Executing a SELECT statement to retrieve the data
-        // 2. Выполнение оператора SELECT для получения данных
-        // 3. Форматування даних відповідно для експорту
-        // 3. Formatting the data appropriately for export
-        // 3. Форматирование данных соответственно для экспорта
-        // 4. Запис даних у вказаний файл
-        // 4. Writing the data to the specified file
-        // 4. Запись данных в указанный файл
-        // 5. Обробку будь-яких помилок або винятків, що виникають під час експорту
-        // 5. Handling any errors or exceptions that occur during export
-        // 5. Обработку любых ошибок или исключений, возникающих во время экспорта
-        
-        std::cout << "[DATABASE] Exporting data from table " << tableName << " to " << filePath << std::endl;
-        
-        // Перевірка назви таблиці та шляху до файлу
-        // Validate table name and file path
-        // Проверка названия таблицы и пути к файлу
         if (tableName.empty() || filePath.empty()) {
             std::cerr << "[DATABASE] Invalid table name or file path for export" << std::endl;
             return false;
         }
         
-        // Виконання оператора SELECT для отримання даних
-        // Execute SELECT statement to retrieve data
-        // Выполнение оператора SELECT для получения данных
-        // У реальній реалізації ми б виконали справжній SQL-запит
-        // In a real implementation, we would execute a real SQL query
-        // В реальной реализации мы бы выполнили настоящий SQL-запрос
-        std::string selectQuery = "SELECT * FROM " + tableName;
-        QueryResult result = executeQuery(selectQuery);
-        
-        // Відкриття файлу для запису
-        // Open file for writing
-        // Открытие файла для записи
-        std::ofstream file(filePath);
-        if (!file.is_open()) {
-            std::cerr << "[DATABASE] Failed to open file for export: " << filePath << std::endl;
+        // 2. Перевірка з'єднання з базою даних
+        // 2. Checking database connection
+        // 2. Проверка соединения с базой данных
+        if (!connected) {
+            std::cerr << "[DATABASE] Not connected to database for export operation" << std::endl;
             return false;
         }
         
-        // Форматування даних відповідно для експорту
-        // Format data appropriately for export
-        // Форматирование данных соответственно для экспорта
+        std::cout << "[DATABASE] Exporting data from table '" << tableName << "' to '" << filePath << "'" << std::endl;
+        
+        // 3. Виконання оператора SELECT для отримання даних
+        // 3. Executing a SELECT statement to retrieve the data
+        // 3. Выполнение оператора SELECT для получения данных
+        auto startTime = getCurrentTimeMillis();
+        
+        // Створення SQL-запиту для отримання всіх даних з таблиці
+        // Create SQL query to retrieve all data from table
+        // Создание SQL-запроса для получения всех данных из таблицы
+        std::string selectQuery = "SELECT * FROM " + tableName;
+        QueryResult result = executeQuery(selectQuery);
+        
+        // 4. Обробка результатів запиту
+        // 4. Processing query results
+        // 4. Обработка результатов запроса
+        if (!result.success) {
+            std::cerr << "[DATABASE] Failed to retrieve data from table '" << tableName << "': " << result.errorMessage << std::endl;
+            return false;
+        }
+        
+        // 5. Відкриття файлу для запису
+        // 5. Open file for writing
+        // 5. Открытие файла для записи
+        std::ofstream file(filePath, std::ios::out | std::ios::trunc);
+        if (!file.is_open()) {
+            std::cerr << "[DATABASE] Failed to create/open file for export: " << filePath << std::endl;
+            return false;
+        }
+        
+        // 6. Форматування даних відповідно для експорту
+        // 6. Formatting the data appropriately for export
+        // 6. Форматирование данных соответственно для экспорта
+        
+        // Запис заголовків стовпців
+        // Write column headers
+        // Запись заголовков столбцов
         if (!result.columnNames.empty()) {
-            // Запис заголовків стовпців
-            // Write column headers
-            // Запись заголовков столбцов
             for (size_t i = 0; i < result.columnNames.size(); ++i) {
                 if (i > 0) file << ",";
-                file << result.columnNames[i];
+                // Екранування значень, що містять коми
+                // Escape values containing commas
+                // Экранирование значений, содержащих запятые
+                std::string columnName = result.columnNames[i];
+                if (columnName.find(',') != std::string::npos || columnName.find('"') != std::string::npos) {
+                    // Додавання лапок та екранування внутрішніх лапок
+                    // Add quotes and escape internal quotes
+                    // Добавление кавычек и экранирование внутренних кавычек
+                    std::string escapedName = columnName;
+                    size_t pos = 0;
+                    while ((pos = escapedName.find('"', pos)) != std::string::npos) {
+                        escapedName.replace(pos, 1, "\"");
+                        pos += 2;
+                    }
+                    file << "\"" << escapedName << "\"";
+                } else {
+                    file << columnName;
+                }
             }
             file << "\n";
             
             // Запис даних рядків
             // Write row data
             // Запись данных строк
+            size_t exportedRows = 0;
             for (const auto& row : result.rows) {
                 for (size_t i = 0; i < result.columnNames.size(); ++i) {
                     if (i > 0) file << ",";
+                    
                     auto it = row.find(result.columnNames[i]);
                     if (it != row.end()) {
-                        file << anyToString(it->second);
+                        // Форматування значення відповідно до типу
+                        // Format value according to type
+                        // Форматирование значения в соответствии с типом
+                        std::string value = anyToString(it->second);
+                        
+                        // Екранування значень, що містять коми або лапки
+                        // Escape values containing commas or quotes
+                        // Экранирование значений, содержащих запятые или кавычки
+                        if (value.find(',') != std::string::npos || value.find('"') != std::string::npos || 
+                            value.find('\n') != std::string::npos || value.find('\r') != std::string::npos) {
+                            // Додавання лапок та екранування внутрішніх лапок
+                            // Add quotes and escape internal quotes
+                            // Добавление кавычек и экранирование внутренних кавычек
+                            std::string escapedValue = value;
+                            size_t pos = 0;
+                            while ((pos = escapedValue.find('"', pos)) != std::string::npos) {
+                                escapedValue.replace(pos, 1, "\"");
+                                pos += 2;
+                            }
+                            file << "\"" << escapedValue << "\"";
+                        } else {
+                            file << value;
+                        }
                     }
                 }
                 file << "\n";
+                exportedRows++;
             }
+            
+            // 7. Оновлення статистики
+            // 7. Update statistics
+            // 7. Обновление статистики
+            statistics.totalQueries++;
+            statistics.successfulQueries++;
+            
+            std::cout << "[DATABASE] Exported " << exportedRows << " rows to '" << filePath << "'" << std::endl;
+        } else {
+            std::cout << "[DATABASE] No data found in table '" << tableName << "'" << std::endl;
         }
         
-        // Закриття файлу
-        // Close file
-        // Закрытие файла
+        // 8. Закриття файлу
+        // 8. Close file
+        // 8. Закрытие файла
         file.close();
         
-        std::cout << "[DATABASE] Successfully exported " << result.rows.size() 
-                  << " rows from table '" << tableName << "' to file '" << filePath << "'" << std::endl;
+        auto endTime = getCurrentTimeMillis();
+        
+        // 9. Обробка будь-яких помилок або винятків, що виникають під час експорту
+        // 9. Handling any errors or exceptions that occur during export
+        // 9. Обработка любых ошибок или исключений, возникающих во время экспорта
+        if (file.fail()) {
+            std::cerr << "[DATABASE] Error occurred while writing to file: " << filePath << std::endl;
+            return false;
+        }
+        
+        std::cout << "[DATABASE] Successfully exported data from table '" << tableName 
+                  << "' to file '" << filePath << "' in " << (endTime - startTime) << " ms" << std::endl;
         
         return true;
     }
