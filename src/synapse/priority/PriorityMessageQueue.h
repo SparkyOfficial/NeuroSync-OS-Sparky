@@ -3,7 +3,6 @@
 
 #include <queue>
 #include <vector>
-#include <map>
 #include <mutex>
 #include <condition_variable>
 #include <atomic>
@@ -17,58 +16,55 @@ namespace NeuroSync {
 namespace Synapse {
 namespace Priority {
 
-    // Тип пріоритету повідомлення
-    // Message priority type
-    // Тип приоритета сообщения
+    // Пріоритет повідомлення
+    // Message priority
+    // Приоритет сообщения
     enum class MessagePriority {
-        LOW = 0,        // Низький пріоритет / Low priority / Низкий приоритет
-        NORMAL = 1,     // Нормальний пріоритет / Normal priority / Нормальный приоритет
-        HIGH = 2,       // Високий пріоритет / High priority / Высокий приоритет
-        CRITICAL = 3    // Критичний пріоритет / Critical priority / Критический приоритет
+        LOW = 0,
+        NORMAL = 1,
+        HIGH = 2,
+        CRITICAL = 3
     };
 
     // Структура повідомлення з пріоритетом
     // Priority message structure
     // Структура сообщения с приоритетом
     struct PriorityMessage {
-        int messageId;              // Унікальний ID повідомлення / Unique message ID / Уникальный ID сообщения
-        int senderId;               // ID відправника / Sender ID / ID отправителя
-        int receiverId;             // ID отримувача / Receiver ID / ID получателя
-        MessagePriority priority;    // Пріоритет повідомлення / Message priority / Приоритет сообщения
-        int weight;                 // Вага повідомлення / Message weight / Вес сообщения
-        long long timestamp;         // Часова мітка створення / Creation timestamp / Временная метка создания
-        long long deadline;          // Кінцевий термін / Deadline / Крайний срок
-        std::vector<char> data;     // Дані повідомлення / Message data / Данные сообщения
-        size_t dataSize;            // Розмір даних / Data size / Размер данных
+        int messageId;
+        int senderId;
+        int receiverId;
+        MessagePriority priority;
+        int weight;
+        long long timestamp;
+        long long deadline;
+        std::vector<char> data;
+        size_t dataSize;
         
         // Оператор порівняння для черги з пріоритетом
         // Comparison operator for priority queue
         // Оператор сравнения для очереди с приоритетом
         bool operator<(const PriorityMessage& other) const {
-            // Спочатку порівнюємо за пріоритетом (вищий пріоритет = менше значення)
-            // First compare by priority (higher priority = lower value)
-            // Сначала сравниваем по приоритету (высший приоритет = меньшее значение)
+            // Спочатку повідомлення з вищим пріоритетом
+            // First messages with higher priority
+            // Сначала сообщения с более высоким приоритетом
             if (priority != other.priority) {
                 return priority < other.priority;
             }
             
-            // Якщо пріоритети однакові, порівнюємо за терміном
-            // If priorities are equal, compare by deadline
-            // Если приоритеты равны, сравниваем по сроку
-            if (deadline != other.deadline) {
-                return deadline > other.deadline;
+            // Потім повідомлення з більшою вагою
+            // Then messages with greater weight
+            // Затем сообщения с большим весом
+            if (weight != other.weight) {
+                return weight < other.weight;
             }
             
-            // Якщо терміни однакові, порівнюємо за часовою міткою (FIFO)
-            // If deadlines are equal, compare by timestamp (FIFO)
-            // Если сроки равны, сравниваем по временной метке (FIFO)
-            return timestamp > other.timestamp;
+            // Нарешті, повідомлення з більш раннім терміном
+            // Finally, messages with earlier deadline
+            // Наконец, сообщения с более ранним сроком
+            return deadline > other.deadline;
         }
     };
 
-    // Черга повідомлень з пріоритетом
-    // Priority message queue
-    // Очередь сообщений с приоритетом
     class PriorityMessageQueue {
     public:
         PriorityMessageQueue();
@@ -124,52 +120,79 @@ namespace Priority {
         // Проверка, достигла ли очередь максимального размера
         bool isFull() const;
         
+        // Статистика черги
+        // Queue statistics
+        // Статистика очереди
+        struct QueueStatistics {
+            size_t totalMessages;
+            size_t droppedMessages;
+            size_t lowPriorityMessages;
+            size_t normalPriorityMessages;
+            size_t highPriorityMessages;
+            size_t criticalPriorityMessages;
+            double averageWaitTime;
+        };
+        
         // Отримання статистики черги
         // Get queue statistics
         // Получение статистики очереди
-        struct QueueStatistics {
-            size_t totalMessages;       // Загальна кількість повідомлень / Total messages / Общее количество сообщений
-            size_t droppedMessages;     // Кількість відкинутих повідомлень / Dropped messages / Количество отброшенных сообщений
-            size_t lowPriorityMessages;  // Кількість повідомлень низького пріоритету / Low priority messages / Количество сообщений низкого приоритета
-            size_t normalPriorityMessages; // Кількість повідомлень нормального пріоритету / Normal priority messages / Количество сообщений нормального приоритета
-            size_t highPriorityMessages;   // Кількість повідомлень високого пріоритету / High priority messages / Количество сообщений высокого приоритета
-            size_t criticalPriorityMessages; // Кількість повідомлень критичного пріоритету / Critical priority messages / Количество сообщений критического приоритета
-            double averageWaitTime;      // Середній час очікування / Average wait time / Среднее время ожидания
-        };
-        
         QueueStatistics getStatistics() const;
         
+        // Встановлення флагу зупинки
+        // Set stopping flag
+        // Установка флага остановки
+        void setStopping(bool stopping);
+        
+    private:
         // Оновлення статистики
         // Update statistics
         // Обновление статистики
         void updateStatistics(const PriorityMessage& message, bool dropped);
         
-    private:
-        // Внутрішня черга з пріоритетом
-        // Internal priority queue
-        // Внутренняя очередь с приоритетом
+        // Генерація ID повідомлення
+        // Generate message ID
+        // Генерация ID сообщения
+        int generateMessageId();
+        
+        // Отримання поточного часу в мілісекундах
+        // Get current time in milliseconds
+        // Получение текущего времени в миллисекундах
+        long long getCurrentTimeMillis() const;
+        
+        // Оновлення статистики за пріоритетом
+        // Update priority statistics
+        // Обновление статистики по приоритету
+        void updatePriorityStatistics(const PriorityMessage& message);
+        
+        // Черга повідомлень з пріоритетом
+        // Priority message queue
+        // Очередь сообщений с приоритетом
         std::priority_queue<PriorityMessage> messageQueue;
         
-        // Мьютекс для синхронізації
-        // Mutex for synchronization
-        // Мьютекс для синхронизации
+        // Мьютекс для синхронізації доступу до черги
+        // Mutex for synchronizing access to queue
+        // Мьютекс для синхронизации доступа к очереди
         mutable std::mutex queueMutex;
         
-        // Умовна змінна для очікування
-        // Condition variable for waiting
-        // Условная переменная для ожидания
+        // Умова для очікування повідомлень
+        // Condition for waiting for messages
+        // Условие для ожидания сообщений
         std::condition_variable queueCondition;
+        
+        // Мьютекс для синхронізації доступу до статистики
+        // Mutex for synchronizing access to statistics
+        // Мьютекс для синхронизации доступа к статистике
+        mutable std::mutex statisticsMutex;
+        
+        // Статистика черги
+        // Queue statistics
+        // Статистика очереди
+        QueueStatistics stats;
         
         // Максимальний розмір черги
         // Maximum queue size
         // Максимальный размер очереди
         size_t maxSize;
-        
-        // Статистика
-        // Statistics
-        // Статистика
-        mutable std::mutex statisticsMutex;
-        QueueStatistics stats;
         
         // Лічильник ID повідомлень
         // Message ID counter
@@ -181,12 +204,10 @@ namespace Priority {
         // Флаг инициализации
         std::atomic<bool> initialized;
         
-        // Внутрішні методи
-        // Internal methods
-        // Внутренние методы
-        int generateMessageId();
-        long long getCurrentTimeMillis() const;
-        void updatePriorityStatistics(const PriorityMessage& message);
+        // Флаг зупинки
+        // Stopping flag
+        // Флаг остановки
+        std::atomic<bool> stopping;
     };
 
 } // namespace Priority

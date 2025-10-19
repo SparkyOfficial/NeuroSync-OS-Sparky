@@ -1,6 +1,7 @@
 #include "PriorityMessageQueue.h"
 #include <chrono>
 #include <algorithm>
+#include <iostream>
 
 // PriorityMessageQueue.cpp
 // Реалізація черги повідомлень з пріоритетом для SynapseBus
@@ -12,7 +13,7 @@ namespace Synapse {
 namespace Priority {
 
     PriorityMessageQueue::PriorityMessageQueue() 
-        : maxSize(1000), messageIdCounter(1), initialized(false) {
+        : maxSize(1000), messageIdCounter(1), initialized(false), stopping(false) {
         // Конструктор черги повідомлень з пріоритетом
         // Constructor of priority message queue
         // Конструктор очереди сообщений с приоритетом
@@ -56,28 +57,25 @@ namespace Priority {
         clear();
         
         initialized = true;
+        stopping = false;
         return true;
     }
 
-    bool PriorityMessageQueue::enqueue(const PriorityMessage& message) {
+    bool NeuroSync::Synapse::Priority::PriorityMessageQueue::enqueue(const PriorityMessage& message) {
         // Додавання повідомлення до черги
         // Add message to queue
         // Добавление сообщения в очередь
-        
-        if (!initialized) {
+    
+        if (!initialized || stopping) {
             return false;
         }
-        
+    
         std::lock_guard<std::mutex> lock(queueMutex);
         
         // Перевірка, чи черга не переповнена
         // Check if queue is not full
         // Проверка, не переполнена ли очередь
         if (isFull()) {
-            // Оновлення статистики з відкинутим повідомленням
-            // Update statistics with dropped message
-            // Обновление статистики с отброшенным сообщением
-            updateStatistics(message, true);
             return false; // Черга переповнена / Queue is full / Очередь переполнена
         }
         
@@ -85,11 +83,6 @@ namespace Priority {
         // Add message to queue
         // Добавление сообщения в очередь
         messageQueue.push(message);
-        
-        // Оновлення статистики
-        // Update statistics
-        // Обновление статистики
-        updateStatistics(message, false);
         
         // Сповіщення очікуючих потоків
         // Notify waiting threads
@@ -99,37 +92,37 @@ namespace Priority {
         return true;
     }
 
-    bool PriorityMessageQueue::dequeue(PriorityMessage& message) {
+    bool NeuroSync::Synapse::Priority::PriorityMessageQueue::dequeue(PriorityMessage& message) {
         // Вилучення повідомлення з черги
         // Dequeue message from queue
         // Извлечение сообщения из очереди
-        
+    
         if (!initialized) {
             return false;
         }
-        
+    
         std::unique_lock<std::mutex> lock(queueMutex);
-        
-        // Очікування, поки черга не стане непорожньою
-        // Wait until queue is not empty
-        // Ожидание, пока очередь не станет непустой
-        queueCondition.wait(lock, [this]() {
-            return !messageQueue.empty() || !initialized;
+    
+        // Очікування, поки черга не стане непорожньою з таймаутом
+        // Wait until queue is not empty with timeout
+        // Ожидание, пока очередь не станет непустой с таймаутом
+        auto waitResult = queueCondition.wait_for(lock, std::chrono::milliseconds(100), [this]() {
+            return !messageQueue.empty() || !initialized || stopping;
         });
-        
-        // Перевірка, чи черга не порожня
-        // Check if queue is not empty
-        // Проверка, не пуста ли очередь
-        if (messageQueue.empty()) {
+    
+        // Якщо черга порожня або не ініціалізована або зупиняється, повернути false
+        // If queue is empty or not initialized or stopping, return false
+        // Если очередь пуста или не инициализирована или останавливается, вернуть false
+        if (messageQueue.empty() || !initialized || stopping) {
             return false;
         }
-        
+    
         // Вилучення повідомлення з черги
         // Dequeue message from queue
         // Извлечение сообщения из очереди
         message = messageQueue.top();
         messageQueue.pop();
-        
+    
         return true;
     }
 
@@ -185,6 +178,11 @@ namespace Priority {
         while (!messageQueue.empty()) {
             messageQueue.pop();
         }
+        
+        // Сповіщення очікуючих потоків
+        // Notify waiting threads
+        // Уведомление ожидающих потоков
+        queueCondition.notify_all();
     }
 
     void PriorityMessageQueue::setMaxSize(size_t maxSize) {
@@ -286,6 +284,20 @@ namespace Priority {
                 stats.criticalPriorityMessages++;
                 break;
         }
+    }
+
+    void NeuroSync::Synapse::Priority::PriorityMessageQueue::setStopping(bool stopping) {
+        // Встановлення флагу зупинки
+        // Set stopping flag
+        // Установка флага остановки
+    
+        this->stopping = stopping;
+    
+        // Сповіщення очікуючих потоків
+        // Notify waiting threads
+        // Уведомление ожидающих потоков
+        std::lock_guard<std::mutex> lock(queueMutex);
+        queueCondition.notify_all();
     }
 
 } // namespace Priority

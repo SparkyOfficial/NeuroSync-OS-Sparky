@@ -22,6 +22,11 @@
 namespace NeuroSync {
 namespace Event {
 
+    // Forward declaration
+    namespace Synapse {
+        class SynapseBus;
+    }
+
     // Тип події
     // Event type
     // Тип события

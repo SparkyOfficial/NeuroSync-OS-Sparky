@@ -21,7 +21,7 @@
 // Оголосити доступ до статичних змінних з NeuroAPI.cpp
 // Объявить доступ к статическим переменным из NeuroAPI.cpp
 extern NeuronManager* neuronManager;
-extern SynapseBus* synapseBus;
+extern NeuroSync::Synapse::SynapseBus* synapseBus;
 extern Core::Scheduler* scheduler;
 extern NeuroSync::Diagnostics::Diagnostics* diagnostics;
 

@@ -184,6 +184,11 @@ target_include_directories(robotics_example PRIVATE src/robotics src/neuron src/
 # Тесты
 enable_testing()
 
+add_executable(simple_test src/tests/simple_test.cpp)
+target_link_libraries(simple_test PRIVATE neuron synapse api core)
+target_include_directories(simple_test PRIVATE src/neuron src/synapse src/api)
+add_test(NAME simple_test COMMAND simple_test)
+
 add_executable(test_neuron src/tests/test_neurosync.cpp)
 target_link_libraries(test_neuron PRIVATE neuron synapse api core)
 target_include_directories(test_neuron PRIVATE src/neuron)
@@ -242,6 +247,41 @@ add_executable(test_robotics src/tests/test_robotics.cpp)
 target_link_libraries(test_robotics PRIVATE robotics neuron neural_network event core)
 target_include_directories(test_robotics PRIVATE src/robotics src/neuron src/network_neural src/event)
 add_test(NAME test_robotics COMMAND test_robotics)
+
+add_executable(simple_message_test src/tests/simple_message_test.cpp)
+target_link_libraries(simple_message_test PRIVATE neuron synapse api core)
+target_include_directories(simple_message_test PRIVATE src/neuron src/synapse src/api)
+add_test(NAME simple_message_test COMMAND simple_message_test)
+
+add_executable(minimal_test_fix src/tests/minimal_test_fix.cpp)
+target_link_libraries(minimal_test_fix PRIVATE neuron synapse api core)
+target_include_directories(minimal_test_fix PRIVATE src/neuron src/synapse src/api)
+add_test(NAME minimal_test_fix COMMAND minimal_test_fix)
+
+add_executable(minimal_test_no_printf src/tests/minimal_test_no_printf.cpp)
+target_link_libraries(minimal_test_no_printf PRIVATE neuron synapse api core)
+target_include_directories(minimal_test_no_printf PRIVATE src/neuron src/synapse src/api)
+add_test(NAME minimal_test_no_printf COMMAND minimal_test_no_printf)
+
+add_executable(exit_test src/tests/exit_test.cpp)
+target_link_libraries(exit_test PRIVATE neuron synapse api core)
+target_include_directories(exit_test PRIVATE src/neuron src/synapse src/api)
+add_test(NAME exit_test COMMAND exit_test)
+
+add_executable(neurosync_exit_test src/tests/neurosync_exit_test.cpp)
+target_link_libraries(neurosync_exit_test PRIVATE neuron synapse api core)
+target_include_directories(neurosync_exit_test PRIVATE src/neuron src/synapse src/api)
+add_test(NAME neurosync_exit_test COMMAND neurosync_exit_test)
+
+add_executable(debug_test src/tests/debug_test.cpp)
+target_link_libraries(debug_test PRIVATE neuron synapse api core)
+target_include_directories(debug_test PRIVATE src/neuron src/synapse src/api)
+add_test(NAME debug_test COMMAND debug_test)
+
+add_executable(final_test src/tests/final_test.cpp)
+target_link_libraries(final_test PRIVATE neuron synapse api core)
+target_include_directories(final_test PRIVATE src/neuron src/synapse src/api)
+add_test(NAME final_test COMMAND final_test)
 
 # Installation
 # Встановлення

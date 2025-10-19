@@ -157,10 +157,10 @@ namespace Network {
         std::vector<NetworkLayer> layers;           // Шари мережі / Network layers / Слои сети
         std::vector<ConnectionWeight> connections;   // Зв'язки між нейронами / Connections between neurons / Связи между нейронами
         std::unique_ptr<NeuronManager> neuronManager; // Менеджер нейронів / Neuron manager / Менеджер нейронов
-        std::unique_ptr<SynapseBus> synapseBus;     // Шина синапсів / Synapse bus / Шина синапсов
+        std::unique_ptr<NeuroSync::Synapse::SynapseBus> synapseBus;     // Шина синапсів / Synapse bus / Шина синапсов
         NetworkStatistics statistics;               // Статистика мережі / Network statistics / Статистика сети
         bool isInitialized;                         // Прапор ініціалізації / Initialization flag / Флаг инициализации
-        
+
         // Data structures for backpropagation
         std::map<int, double> neuronValues;         // Values of neurons during forward pass
         std::map<int, double> neuronGradients;      // Gradients of neurons during backpropagation

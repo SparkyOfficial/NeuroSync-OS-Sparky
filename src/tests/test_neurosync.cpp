@@ -1,6 +1,8 @@
 #include "../NeuroSync.h"
 #include <cassert>
 #include <iostream>
+#include <thread>
+#include <chrono>
 
 // test_neurosync.cpp
 // Тест для NeuroSync OS Sparky
@@ -58,6 +60,10 @@ int main() {
     const char* testMessage = "Test message";
     bool messageResult = neurosync_send_message(neuron1, neuron2, (void*)testMessage, strlen(testMessage) + 1, 1, 50);
     assert(messageResult == true);
+    
+    // Add a longer delay to ensure the message is processed
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    
     std::cout << "✓ Message sending test passed" << std::endl;
     std::cout << "✓ Тест надсилання повідомлення пройдено" << std::endl;
     std::cout << "✓ Тест отправки сообщения пройден" << std::endl;
@@ -67,6 +73,9 @@ int main() {
     // Очищення
     neurosync_delete_neuron(neuron1);
     neurosync_delete_neuron(neuron2);
+    
+    // Stop the system to prevent hanging
+    neurosync_stop();
     
     std::cout << "\nAll tests passed!" << std::endl;
     std::cout << "Всі тести пройдено!" << std::endl;

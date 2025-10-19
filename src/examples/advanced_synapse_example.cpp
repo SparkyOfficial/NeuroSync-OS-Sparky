@@ -25,59 +25,68 @@ void demonstratePriorityQueue() {
     std::cout << "=== Демонстрація черги повідомлень з пріоритетом ===" << std::endl;
     std::cout << "=== Демонстрация очереди сообщений с приоритетом ===" << std::endl;
     
-    // Створення черги повідомлень
-    // Creating message queue
-    // Создание очереди сообщений
-    PriorityMessageQueue queue;
-    queue.initialize();
+    // Створення черги повідомлень з пріоритетом
+    // Creating priority message queue
+    // Создание очереди сообщений с приоритетом
+    NeuroSync::Synapse::Priority::PriorityMessageQueue queue;
+    if (!queue.initialize()) {
+        std::cerr << "Failed to initialize PriorityMessageQueue!" << std::endl;
+        std::cerr << "Не вдалося ініціалізувати PriorityMessageQueue!" << std::endl;
+        std::cerr << "Не удалось инициализировать PriorityMessageQueue!" << std::endl;
+        return;
+    }
     
-    // Створення повідомлень різного пріоритету
+    std::cout << "PriorityMessageQueue initialized successfully." << std::endl;
+    std::cout << "PriorityMessageQueue успішно ініціалізовано." << std::endl;
+    std::cout << "PriorityMessageQueue успешно инициализирован." << std::endl;
+    
+    // Створення повідомлень з різними пріоритетами
     // Creating messages with different priorities
     // Создание сообщений с разными приоритетами
-    PriorityMessage criticalMsg;
+    NeuroSync::Synapse::Priority::PriorityMessage criticalMsg;
     criticalMsg.messageId = 1;
     criticalMsg.senderId = 100;
     criticalMsg.receiverId = 200;
-    criticalMsg.priority = MessagePriority::CRITICAL;
+    criticalMsg.priority = NeuroSync::Synapse::Priority::MessagePriority::CRITICAL;
     criticalMsg.weight = 10;
     criticalMsg.timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::system_clock::now().time_since_epoch()).count();
+        std::chrono::high_resolution_clock::now().time_since_epoch()).count();
     criticalMsg.deadline = criticalMsg.timestamp + 5000;
     criticalMsg.data = {'C', 'R', 'I', 'T', 'I', 'C', 'A', 'L'};
     criticalMsg.dataSize = 8;
     
-    PriorityMessage highMsg;
+    NeuroSync::Synapse::Priority::PriorityMessage highMsg;
     highMsg.messageId = 2;
     highMsg.senderId = 101;
     highMsg.receiverId = 201;
-    highMsg.priority = MessagePriority::HIGH;
+    highMsg.priority = NeuroSync::Synapse::Priority::MessagePriority::HIGH;
     highMsg.weight = 8;
     highMsg.timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::system_clock::now().time_since_epoch()).count();
+        std::chrono::high_resolution_clock::now().time_since_epoch()).count();
     highMsg.deadline = highMsg.timestamp + 10000;
     highMsg.data = {'H', 'I', 'G', 'H'};
     highMsg.dataSize = 4;
     
-    PriorityMessage normalMsg;
+    NeuroSync::Synapse::Priority::PriorityMessage normalMsg;
     normalMsg.messageId = 3;
     normalMsg.senderId = 102;
     normalMsg.receiverId = 202;
-    normalMsg.priority = MessagePriority::NORMAL;
+    normalMsg.priority = NeuroSync::Synapse::Priority::MessagePriority::NORMAL;
     normalMsg.weight = 5;
     normalMsg.timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::system_clock::now().time_since_epoch()).count();
+        std::chrono::high_resolution_clock::now().time_since_epoch()).count();
     normalMsg.deadline = normalMsg.timestamp + 15000;
     normalMsg.data = {'N', 'O', 'R', 'M', 'A', 'L'};
     normalMsg.dataSize = 6;
     
-    PriorityMessage lowMsg;
+    NeuroSync::Synapse::Priority::PriorityMessage lowMsg;
     lowMsg.messageId = 4;
     lowMsg.senderId = 103;
     lowMsg.receiverId = 203;
-    lowMsg.priority = MessagePriority::LOW;
+    lowMsg.priority = NeuroSync::Synapse::Priority::MessagePriority::LOW;
     lowMsg.weight = 2;
     lowMsg.timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::system_clock::now().time_since_epoch()).count();
+        std::chrono::high_resolution_clock::now().time_since_epoch()).count();
     lowMsg.deadline = lowMsg.timestamp + 20000;
     lowMsg.data = {'L', 'O', 'W'};
     lowMsg.dataSize = 3;
@@ -97,21 +106,21 @@ void demonstratePriorityQueue() {
     // Вилучення повідомлень з черги (вони повинні бути в порядку пріоритету)
     // Dequeueing messages from queue (they should be in priority order)
     // Извлечение сообщений из очереди (они должны быть в порядке приоритета)
-    PriorityMessage receivedMsg;
+    NeuroSync::Synapse::Priority::PriorityMessage receivedMsg;
     while (!queue.isEmpty()) {
         if (queue.dequeue(receivedMsg)) {
             std::string priorityStr;
             switch (receivedMsg.priority) {
-                case MessagePriority::CRITICAL:
+                case NeuroSync::Synapse::Priority::MessagePriority::CRITICAL:
                     priorityStr = "CRITICAL";
                     break;
-                case MessagePriority::HIGH:
+                case NeuroSync::Synapse::Priority::MessagePriority::HIGH:
                     priorityStr = "HIGH";
                     break;
-                case MessagePriority::NORMAL:
+                case NeuroSync::Synapse::Priority::MessagePriority::NORMAL:
                     priorityStr = "NORMAL";
                     break;
-                case MessagePriority::LOW:
+                case NeuroSync::Synapse::Priority::MessagePriority::LOW:
                     priorityStr = "LOW";
                     break;
             }
@@ -148,7 +157,7 @@ void demonstrateWeightedConnections() {
     // Створення менеджера зважених з'єднань
     // Creating weighted connection manager
     // Создание менеджера взвешенных соединений
-    WeightedConnectionManager connManager;
+    NeuroSync::Synapse::Utils::WeightedConnectionManager connManager;
     connManager.initialize();
     
     // Створення зважених з'єднань
@@ -227,13 +236,12 @@ void demonstrateWeightedConnections() {
 
 void demonstrateSynapseBus() {
     std::cout << "\n=== SynapseBus Demonstration ===" << std::endl;
-    std::cout << "=== Демонстрація шини синапсів ===" << std::endl;
     std::cout << "=== Демонстрация шины синапсов ===" << std::endl;
     
     // Створення шини синапсів
     // Creating synapse bus
     // Создание шины синапсов
-    SynapseBus synapseBus;
+    NeuroSync::Synapse::SynapseBus synapseBus;
     if (!synapseBus.initialize()) {
         std::cerr << "Failed to initialize SynapseBus!" << std::endl;
         std::cerr << "Не вдалося ініціалізувати SynapseBus!" << std::endl;
@@ -265,10 +273,10 @@ void demonstrateSynapseBus() {
     const char* normalData = "NORMAL_DATA";
     const char* lowData = "LOW_PRIORITY_DATA";
     
-    synapseBus.sendMessage(100, 200, criticalData, strlen(criticalData), MessagePriority::CRITICAL, 10);
-    synapseBus.sendMessage(100, 300, highData, strlen(highData), MessagePriority::HIGH, 8);
-    synapseBus.sendMessage(200, 400, normalData, strlen(normalData), MessagePriority::NORMAL, 5);
-    synapseBus.sendMessage(300, 400, lowData, strlen(lowData), MessagePriority::LOW, 2);
+    synapseBus.sendMessage(100, 200, criticalData, strlen(criticalData), NeuroSync::Synapse::Priority::MessagePriority::CRITICAL, 10);
+    synapseBus.sendMessage(100, 300, highData, strlen(highData), NeuroSync::Synapse::Priority::MessagePriority::HIGH, 8);
+    synapseBus.sendMessage(200, 400, normalData, strlen(normalData), NeuroSync::Synapse::Priority::MessagePriority::NORMAL, 5);
+    synapseBus.sendMessage(300, 400, lowData, strlen(lowData), NeuroSync::Synapse::Priority::MessagePriority::LOW, 2);
     
     std::cout << "Sent 4 messages. Queue size: " << synapseBus.getMessageQueueSize() << std::endl;
     std::cout << "Надіслано 4 повідомлення. Розмір черги: " << synapseBus.getMessageQueueSize() << std::endl;
@@ -280,22 +288,22 @@ void demonstrateSynapseBus() {
     int senderId, receiverId, weight;
     void* receivedData;
     size_t dataSize;
-    MessagePriority priority;
+    NeuroSync::Synapse::Priority::MessagePriority priority;
     
     while (synapseBus.getMessageQueueSize() > 0) {
         if (synapseBus.receiveMessage(senderId, receiverId, receivedData, dataSize, priority, weight)) {
             std::string priorityStr;
             switch (priority) {
-                case MessagePriority::CRITICAL:
+                case NeuroSync::Synapse::Priority::MessagePriority::CRITICAL:
                     priorityStr = "CRITICAL";
                     break;
-                case MessagePriority::HIGH:
+                case NeuroSync::Synapse::Priority::MessagePriority::HIGH:
                     priorityStr = "HIGH";
                     break;
-                case MessagePriority::NORMAL:
+                case NeuroSync::Synapse::Priority::MessagePriority::NORMAL:
                     priorityStr = "NORMAL";
                     break;
-                case MessagePriority::LOW:
+                case NeuroSync::Synapse::Priority::MessagePriority::LOW:
                     priorityStr = "LOW";
                     break;
             }
