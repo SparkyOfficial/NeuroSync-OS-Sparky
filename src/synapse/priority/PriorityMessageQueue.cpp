@@ -7,6 +7,7 @@
 // Реалізація черги повідомлень з пріоритетом для SynapseBus
 // Implementation of priority message queue for SynapseBus
 // Реализация очереди сообщений с приоритетом для SynapseBus
+// Author: Андрій Будильников
 
 namespace NeuroSync {
 namespace Synapse {
@@ -66,23 +67,28 @@ namespace Priority {
         // Add message to queue
         // Добавление сообщения в очередь
     
+        // перевірка чи черга ініціалізована і не зупиняється
+        // check if queue is initialized and not stopping
+        // проверка инициализации очереди и что она не останавливается
         if (!initialized || stopping) {
             return false;
         }
     
-        std::lock_guard<std::mutex> lock(queueMutex);
-        
-        // Перевірка, чи черга не переповнена
-        // Check if queue is not full
-        // Проверка, не переполнена ли очередь
-        if (isFull()) {
-            return false; // Черга переповнена / Queue is full / Очередь переполнена
-        }
-        
-        // Додавання повідомлення до черги
-        // Add message to queue
-        // Добавление сообщения в очередь
-        messageQueue.push(message);
+        {
+            std::lock_guard<std::mutex> lock(queueMutex);
+            
+            // Перевірка, чи черга не переповнена
+            // Check if queue is not full
+            // Проверка, не переполнена ли очередь
+            if (isFull()) {
+                return false; // Черга переповнена / Queue is full / Очередь переполнена
+            }
+            
+            // Додавання повідомлення до черги
+            // Add message to queue
+            // Добавление сообщения в очередь
+            messageQueue.push(message);
+        } // блокування звільняється тут / lock released here / блокировка освобождается здесь
         
         // Сповіщення очікуючих потоків
         // Notify waiting threads
@@ -97,6 +103,9 @@ namespace Priority {
         // Dequeue message from queue
         // Извлечение сообщения из очереди
     
+        // перевірка ініціалізації
+        // check initialization
+        // проверка инициализации
         if (!initialized) {
             return false;
         }
@@ -291,12 +300,14 @@ namespace Priority {
         // Set stopping flag
         // Установка флага остановки
     
-        this->stopping = stopping;
+        {
+            std::lock_guard<std::mutex> lock(queueMutex);
+            this->stopping = stopping;
+        } // блокування звільняється тут / lock released here / блокировка освобождается здесь
     
         // Сповіщення очікуючих потоків
         // Notify waiting threads
         // Уведомление ожидающих потоков
-        std::lock_guard<std::mutex> lock(queueMutex);
         queueCondition.notify_all();
     }
 

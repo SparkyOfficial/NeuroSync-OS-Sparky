@@ -283,6 +283,14 @@ target_link_libraries(final_test PRIVATE neuron synapse api core)
 target_include_directories(final_test PRIVATE src/neuron src/synapse src/api)
 add_test(NAME final_test COMMAND final_test)
 
+# Comprehensive test
+# Комплексний тест
+# Комплексный тест
+add_executable(comprehensive_test src/tests/comprehensive_test.cpp)
+target_link_libraries(comprehensive_test PRIVATE neuron synapse api core)
+target_include_directories(comprehensive_test PRIVATE src/neuron src/synapse src/api)
+add_test(NAME comprehensive_test COMMAND comprehensive_test)
+
 # Installation
 # Встановлення
 # Установка
