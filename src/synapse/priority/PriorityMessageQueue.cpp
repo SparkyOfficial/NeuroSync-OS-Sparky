@@ -66,14 +66,14 @@ namespace Priority {
         // Додавання повідомлення до черги
         // Add message to queue
         // Добавление сообщения в очередь
-    
+
         // перевірка чи черга ініціалізована і не зупиняється
         // check if queue is initialized and not stopping
         // проверка инициализации очереди и что она не останавливается
         if (!initialized || stopping) {
             return false;
         }
-    
+
         {
             std::lock_guard<std::mutex> lock(queueMutex);
             
@@ -122,7 +122,7 @@ namespace Priority {
             auto waitResult = queueCondition.wait_for(lock, std::chrono::milliseconds(100), [this]() {
                 return !messageQueue.empty() || !initialized || stopping;
             });
-        
+            
             // Якщо після очікування черга все ще порожня, або система не ініціалізована, або зупиняється, повертаємо false
             // If after waiting the queue is still empty, or system is not initialized, or stopping, return false
             // Если после ожидания очередь все еще пуста, или система не инициализирована, или останавливается, возвращаем false
@@ -309,12 +309,12 @@ namespace Priority {
         // Встановлення флагу зупинки
         // Set stopping flag
         // Установка флага остановки
-    
+
         {
             std::lock_guard<std::mutex> lock(queueMutex);
             this->stopping = stopping;
         } // блокування звільняється тут / lock released here / блокировка освобождается здесь
-    
+
         // Сповіщення очікуючих потоків
         // Notify waiting threads
         // Уведомление ожидающих потоков

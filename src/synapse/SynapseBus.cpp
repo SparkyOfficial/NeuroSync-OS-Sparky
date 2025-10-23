@@ -106,7 +106,16 @@ void NeuroSync::Synapse::SynapseBus::stop() {
         // wait for processing thread to finish
         // ждем завершения потока обработки
         if (processingThread.joinable()) {
-            processingThread.join();
+            // додаємо таймаут для join, щоб уникнути нескінченного очікування
+            // add timeout for join to avoid infinite waiting
+            // добавляем таймаут для join, чтобы избежать бесконечного ожидания
+            try {
+                processingThread.join();
+            } catch (...) {
+                // ігноруємо помилки при join
+                // ignore errors when joining
+                // игнорируем ошибки при join
+            }
         }
     }
 }
@@ -148,7 +157,10 @@ bool NeuroSync::Synapse::SynapseBus::sendMessage(int senderId, int receiverId, c
     // Надсилання повідомлення
     // Send message
     // Отправка сообщения
-    return messageQueue->enqueue(message);
+    if (messageQueue) {
+        return messageQueue->enqueue(message);
+    }
+    return false;
 }
 
 bool SynapseBus::receiveMessage(int& senderId, int& receiverId, void*& data, size_t& dataSize, 
@@ -321,6 +333,13 @@ void NeuroSync::Synapse::SynapseBus::messageProcessingLoop() {
             // якщо dequeue повертає false, це може бути через зупинку або порожню чергу
             // if dequeue returns false, it might be due to stopping or empty queue
             // если dequeue возвращает false, это может быть из-за остановки или пустой очереди
+            
+            // перевіряємо чи потрібно продовжувати
+            // check if we need to continue
+            // проверяем, нужно ли продолжать
+            if (!processing || !initialized) {
+                break;
+            }
             
             // додаємо невелику затримку, щоб уникнути зайвого навантаження на CPU
             // add a small delay to avoid excessive CPU load

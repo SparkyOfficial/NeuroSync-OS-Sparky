@@ -291,6 +291,22 @@ target_link_libraries(comprehensive_test PRIVATE neuron synapse api core)
 target_include_directories(comprehensive_test PRIVATE src/neuron src/synapse src/api)
 add_test(NAME comprehensive_test COMMAND comprehensive_test)
 
+# Minimal hang test
+# Мінімальний тест на зависання
+# Минимальный тест на зависание
+add_executable(minimal_hang_test src/tests/minimal_hang_test.cpp)
+target_link_libraries(minimal_hang_test PRIVATE neuron synapse api core)
+target_include_directories(minimal_hang_test PRIVATE src/neuron src/synapse src/api)
+add_test(NAME minimal_hang_test COMMAND minimal_hang_test)
+
+# Debug hang test
+# Тест на зависання для налагодження
+# Тест на зависание для отладки
+add_executable(debug_hang_test src/tests/debug_hang_test.cpp)
+target_link_libraries(debug_hang_test PRIVATE neuron synapse api core)
+target_include_directories(debug_hang_test PRIVATE src/neuron src/synapse src/api)
+add_test(NAME debug_hang_test COMMAND debug_hang_test)
+
 # Installation
 # Встановлення
 # Установка
