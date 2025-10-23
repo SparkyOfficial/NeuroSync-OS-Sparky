@@ -125,7 +125,7 @@ bool NeuroSync::Synapse::SynapseBus::sendMessage(int senderId, int receiverId, c
     // Create message
     // Создание сообщения
     NeuroSync::Synapse::Priority::PriorityMessage message;
-    message.messageId = messageQueue->generateMessageId();
+    message.messageId = 0; // Буде встановлено в черзі / Will be set in queue / Будет установлено в очереди
     message.senderId = senderId;
     message.receiverId = receiverId;
     message.priority = priority;
@@ -317,10 +317,16 @@ void NeuroSync::Synapse::SynapseBus::messageProcessingLoop() {
             // Process message
             // Обработка сообщения
             processMessage(message);
+        } else {
+            // якщо dequeue повертає false, це може бути через зупинку або порожню чергу
+            // if dequeue returns false, it might be due to stopping or empty queue
+            // если dequeue возвращает false, это может быть из-за остановки или пустой очереди
+            
+            // додаємо невелику затримку, щоб уникнути зайвого навантаження на CPU
+            // add a small delay to avoid excessive CPU load
+            // добавляем небольшую задержку, чтобы избежать чрезмерной нагрузки на CPU
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
-        // якщо dequeue повертає false, це може бути через зупинку або порожню чергу
-        // if dequeue returns false, it might be due to stopping or empty queue
-        // если dequeue возвращает false, это может быть из-за остановки или пустой очереди
     }
 }
 

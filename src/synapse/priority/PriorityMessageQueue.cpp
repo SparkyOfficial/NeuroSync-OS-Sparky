@@ -102,36 +102,46 @@ namespace Priority {
         // Вилучення повідомлення з черги
         // Dequeue message from queue
         // Извлечение сообщения из очереди
-    
+
         // перевірка ініціалізації
         // check initialization
         // проверка инициализации
         if (!initialized) {
             return false;
         }
-    
+
         std::unique_lock<std::mutex> lock(queueMutex);
-    
+
         // Очікування, поки черга не стане непорожньою з таймаутом
         // Wait until queue is not empty with timeout
         // Ожидание, пока очередь не станет непустой с таймаутом
-        auto waitResult = queueCondition.wait_for(lock, std::chrono::milliseconds(100), [this]() {
-            return !messageQueue.empty() || !initialized || stopping;
-        });
-    
-        // Якщо черга порожня або не ініціалізована або зупиняється, повернути false
-        // If queue is empty or not initialized or stopping, return false
-        // Если очередь пуста или не инициализирована или останавливается, вернуть false
-        if (messageQueue.empty() || !initialized || stopping) {
+        // якщо черга вже не порожня, не чекаємо
+        // if queue is already not empty, don't wait
+        // если очередь уже не пуста, не ждем
+        if (messageQueue.empty() && initialized && !stopping) {
+            auto waitResult = queueCondition.wait_for(lock, std::chrono::milliseconds(100), [this]() {
+                return !messageQueue.empty() || !initialized || stopping;
+            });
+        
+            // Якщо після очікування черга все ще порожня, або система не ініціалізована, або зупиняється, повертаємо false
+            // If after waiting the queue is still empty, or system is not initialized, or stopping, return false
+            // Если после ожидания очередь все еще пуста, или система не инициализирована, или останавливается, возвращаем false
+            if (messageQueue.empty() || !initialized || stopping) {
+                return false;
+            }
+        } else if (messageQueue.empty() || !initialized || stopping) {
+            // Якщо черга порожня, або система не ініціалізована, або зупиняється, повертаємо false
+            // If queue is empty, or system is not initialized, or stopping, return false
+            // Если очередь пуста, или система не инициализирована, или останавливается, возвращаем false
             return false;
         }
-    
+
         // Вилучення повідомлення з черги
         // Dequeue message from queue
         // Извлечение сообщения из очереди
         message = messageQueue.top();
         messageQueue.pop();
-    
+
         return true;
     }
 
